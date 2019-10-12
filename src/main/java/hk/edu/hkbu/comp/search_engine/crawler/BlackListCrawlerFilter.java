@@ -1,6 +1,6 @@
 package hk.edu.hkbu.comp.search_engine.crawler;
 
-public class BlackListFilter implements Filter {
+public class BlackListCrawlerFilter implements CrawlerFilter {
     @Override
     public void accept(String url) {
     }

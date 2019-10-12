@@ -13,7 +13,6 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-//        String s = loadPlainText("http://www.comp.hkbu.edu.hk/v1");
         List<String> list = getURLs("http://www.comp.hkbu.edu.hk/v1");
         for (String s2 : list) {
             System.out.println(s2);
@@ -26,7 +25,7 @@ public class Test {
 
     public static URL toAbsURL(String str, URL ref) throws MalformedURLException {
         URL url = null;
-        String prefix = ref.getProtocol() + "://" + ref.getHost() + ref.getPath();
+        String prefix = ref.getProtocol() + "://" + ref.getHost();
         //TODO ADD delete /
         if (prefix.endsWith("/")) {
             prefix = prefix.substring(0, prefix.length() - 1);
@@ -64,7 +63,6 @@ public class Test {
         String s = con.getURL().toString();
         InputStream is = con.getInputStream();
         System.out.println("redirected url: " + con.getURL());
-        System.out.println(is.toString());
         is.close();
 
         URL url = con.getURL();

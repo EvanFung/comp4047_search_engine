@@ -1,6 +1,6 @@
 package hk.edu.hkbu.comp.search_engine.crawler;
 
-public class WordFilter implements Filter {
+public class WordCrawlerFilter implements CrawlerFilter {
     @Override
     public void accept(String url) {
     }

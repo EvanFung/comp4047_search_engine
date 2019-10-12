@@ -11,18 +11,4 @@ import java.net.URL;
  * */
 public class Crawler {
 
-    String loadWebPage(String urlString) {
-        byte[] buffer = new byte[1024];
-        String content = new String();
-        try {
-            URL url = new URL(urlString);
-            InputStream in = url.openStream();
-            int len;
-            while ((len = in.read(buffer)) != -1)
-                content += new String(buffer);
-        } catch (IOException e) {
-            content = "<h1>Unable to download the page</h1>" + urlString;
-        }
-        return content;
-    }
 }

@@ -1,5 +1,5 @@
 package hk.edu.hkbu.comp.search_engine.crawler;
 
-public interface Filter {
+public interface CrawlerFilter {
     void accept(String url);
 }
