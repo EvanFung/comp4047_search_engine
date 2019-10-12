@@ -9,7 +9,7 @@ public class MyController {
     @GetMapping("**")
     @ResponseBody
     String load(HttpServletRequest request) {
-        return "Hello Worlddddd";
+        return "Hello World";
     }
 }
 
