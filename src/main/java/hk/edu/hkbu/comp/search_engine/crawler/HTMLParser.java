@@ -3,24 +3,18 @@ package hk.edu.hkbu.comp.search_engine.crawler;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
-public class MyParserCallback extends HTMLEditorKit.ParserCallback {
+
+public class HTMLParser extends HTMLEditorKit.ParserCallback {
+    public ArrayList<String> urls = new ArrayList<String>();
     public String content = new String();
-    public List<String> urls = new ArrayList<String>();
-
-    // Override features of the parent's class
-    @Override
-    public void handleText(char[] data, int pos) {
-        content += new String(data) + " ";
-    }
-
+    public String keywordContent = new String();
+    public String title = new String();
 
     public void handleStartTag(HTML.Tag tag, MutableAttributeSet attrSet, int pos) {
+        //get a tag
         if (tag.toString().equals("a")) {
             Enumeration e = attrSet.getAttributeNames();
             while (e.hasMoreElements()) {
@@ -32,11 +26,22 @@ public class MyParserCallback extends HTMLEditorKit.ParserCallback {
                 }
             }
         }
+
+
+        //get title tag
+        if (tag.toString().equals("title")) {
+
+        }
     }
 
+    // Override features of the parent's class
+    @Override
+    public void handleText(char[] data, int pos) {
+        content += new String(data) + " ";
+    }
 
+    @Override
+    public void handleSimpleTag(HTML.Tag tag, MutableAttributeSet attrSet, int pos) {
+
+    }
 }
-
-
-
-
