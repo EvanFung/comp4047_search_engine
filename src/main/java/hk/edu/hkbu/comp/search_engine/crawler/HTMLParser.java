@@ -14,6 +14,7 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
     public String title = new String();
 
     public void handleStartTag(HTML.Tag tag, MutableAttributeSet attrSet, int pos) {
+        UrlFilter urlFilter = new UrlFilter();
         //get a tag
         if (tag.toString().equals("a")) {
             Enumeration e = attrSet.getAttributeNames();
@@ -21,7 +22,7 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
                 Object aname = e.nextElement();
                 if (aname.toString().equals("href")) {
                     String u = (String) attrSet.getAttribute(aname);
-                    if (urls.size() < 1024 && !urls.contains(u))
+                    if (urls.size() < 1024 && !urls.contains(u) && urlFilter.accpect(u))
                         urls.add(u);
                 }
             }

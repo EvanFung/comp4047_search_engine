@@ -9,7 +9,7 @@ public class UrlQueue {
 
     private static Set<String> visitedUrl = new HashSet<>();
 
-    private static Queue<String> unVisitedUrl = new PriorityQueue<>();
+    private static Queue<String> unVisitedUrl = new PriorityQueue<>(100);
 
     public static void addVisitedUrl(String url) {
         visitedUrl.add(url);
