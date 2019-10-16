@@ -4,50 +4,91 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class UrlQueue {
 
+    //processed url pool
     private static Set<String> visitedUrl = new HashSet<>();
+    //url pool
+    private static Queue<String> unVisitedUrl = new PriorityQueue<>();
 
-    private static Queue<String> unVisitedUrl = new PriorityQueue<>(100);
 
-    public static void addVisitedUrl(String url) {
-        visitedUrl.add(url);
-        System.out.println("visited url has " + visitedUrl.size());
+    private UrlQueue() {
+
     }
 
-    public static void removeVisitedUrl(String url) {
+    public static synchronized void addVisitedUrl(final String url) {
+        visitedUrl.add(url);
+        System.out.println("now processed url has ：" + UrlQueue.getVisitedUrlNum() + " elements");
+    }
+
+
+    public static synchronized void removeVisitedUrl(final String url) {
         visitedUrl.remove(url);
     }
 
-    public static int getVisitedUrlSize() {
+    /**
+     * get the number that has been visited.
+     *
+     * @return The number that has been visited.
+     */
+    public static synchronized int getVisitedUrlNum() {
         return visitedUrl.size();
     }
 
-    public static Queue<String> getUnVisitedUrl() {
+    /**
+     * @return Queue<String>
+     */
+    public static synchronized Queue<String> getUnVisitedUrl() {
         return unVisitedUrl;
     }
 
+    /**
+     * 未访问的URL出队列.
+     *
+     * @return Object
+     */
     public static Object unVisitedUrlDeQueue() {
-        String visitUrl = unVisitedUrl.poll();
-        System.out.println(visitUrl + " leave unvisited url queue");
+
+        String visitUrl = null;
+
+        visitUrl = unVisitedUrl.poll();
+        System.out.println(visitUrl + " leave queue");
+
         return visitUrl;
     }
 
-    public static int getUnvisitedUrlSize() {
+    /**
+     *
+     *
+     * @param url url
+     */
+    public static void addUnvisitedUrl(final String url) {
+
+        if (!visitedUrl.contains(url) && !unVisitedUrl.contains(url)) {
+            unVisitedUrl.add(url);
+            System.out.println(">>>>????");
+//            System.out.println("now url pool has :" + UrlQueue.getUnVisitedUrlNum() + " elements"); //
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public static int getUnVisitedUrlNum() {
         return unVisitedUrl.size();
     }
 
-    public static boolean isUnVisitedUrlEmpty() {
+    /**
+     *
+     * @return boolean
+     */
+    public static synchronized boolean unVisitedUrlsEmpty() {
         return unVisitedUrl.isEmpty();
     }
 
-    public static void addUnvisitedUrl(String url) {
-        if (url != null && !url.trim().equals("") && !visitedUrl.contains(url) && !unVisitedUrl.contains(url)) {
-            unVisitedUrl.add(url);
-            System.out.println(url + " enter unvisited url queue!!!");
-            System.out.println("the size of unvisited queue is " + UrlQueue.getUnvisitedUrlSize());
-        }
-    }
 
 }

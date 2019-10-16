@@ -14,8 +14,8 @@ public class Crawler {
     //maximum number of web pages that crawled
     final int MAXNUM = 100;
     int downloadFileNum = 0;
-    final int MAXSEEDNUM = 10;
-    String[] seeds = new String[MAXSEEDNUM];
+    final int X = 10;
+    String[] seeds = new String[X];
 
     public Crawler() {
     }
@@ -28,35 +28,29 @@ public class Crawler {
 
 
     public void crawling() throws IOException {
-        while (downloadFileNum < MAXNUM) {
-            if (!UrlQueue.isUnVisitedUrlEmpty()) {
+        while (UrlQueue.getUnVisitedUrlNum() < MAXNUM) {
+            //Retrieve and remove an URL from URL Pool
+            String visitUrl = (String) UrlQueue.unVisitedUrlDeQueue();
+            //add this URL to Processed URL Pool
+            UrlQueue.addVisitedUrl(visitUrl);
+            //TODO extract all words from this web pages. if not listed in the given blacklist and ignore list
+            //Extract all words from this web page.
+            //For each word, if it is not listed in the given blacklist and ignore list, store the following items:
+            // i) the word,
+            // ii) URL with its title, and
+            // iii) number of the word containing in the page.
+            //TODO store the words, URL with its title, the number of word containing in the page.
+            //get the corresponding web page.
+            List<String> links = getURLs(visitUrl);
 
-                String visitUrl = (String) UrlQueue.unVisitedUrlDeQueue();
-
-
-                //Test the url is redirect or not
-                HttpURLConnection con = (HttpURLConnection) (new URL(visitUrl).openConnection());
-                con.setInstanceFollowRedirects(false);
-                con.connect();
-
-                int responseCode = con.getResponseCode();
-                if (responseCode == 302 || responseCode == 301) {
-                    visitUrl += con.getHeaderField("Location");
-                }
-//
-//                DownloadFile downloadFile = new DownloadFile();
-//                downloadFile.downloadFile(visitUrl);
-                downloadFileNum++;
-                UrlQueue.addVisitedUrl(visitUrl);
-                //TODO extract all words from this web pages. if not listed in the given blacklist and ignore list
-                //store the words, URL with its title, the number of word containing in the page.
-                List<String> links = getURLs(visitUrl);
-
-                for (String url : links) {
+            for (String url : links) {
+                if(UrlQueue.getUnVisitedUrlNum() < X) {
+                    System.out.println("now url pool has " + UrlQueue.getUnVisitedUrlNum() + " elements");
                     UrlQueue.addUnvisitedUrl(url);
                 }
             }
         }
+
     }
 
 
@@ -89,8 +83,8 @@ public class Crawler {
     public static URL toAbsURL(String str, URL ref) throws MalformedURLException {
         URL url = null;
         String prefix = ref.getProtocol() + "://" + ref.getHost() + ref.getPath();
-        if(prefix.endsWith("/")) {
-            prefix = prefix.substring(0,prefix.length() -1);
+        if (prefix.endsWith("/")) {
+            prefix = prefix.substring(0, prefix.length() - 1);
         }
 
         if (ref.getPort() > -1)
