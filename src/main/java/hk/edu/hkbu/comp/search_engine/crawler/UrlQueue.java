@@ -47,7 +47,7 @@ public class UrlQueue {
     }
 
     /**
-     * 未访问的URL出队列.
+     *
      *
      * @return Object
      */
@@ -70,7 +70,6 @@ public class UrlQueue {
 
         if (!visitedUrl.contains(url) && !unVisitedUrl.contains(url)) {
             unVisitedUrl.add(url);
-            System.out.println(">>>>????");
 //            System.out.println("now url pool has :" + UrlQueue.getUnVisitedUrlNum() + " elements"); //
         }
     }

@@ -44,7 +44,7 @@ public class Crawler {
             List<String> links = getURLs(visitUrl);
 
             for (String url : links) {
-                if(UrlQueue.getUnVisitedUrlNum() < X) {
+                if (UrlQueue.getUnVisitedUrlNum() < X) {
                     System.out.println("now url pool has " + UrlQueue.getUnVisitedUrlNum() + " elements");
                     UrlQueue.addUnvisitedUrl(url);
                 }
@@ -55,11 +55,7 @@ public class Crawler {
 
 
     public static List<String> getURLs(String srcPage) throws IOException {
-        URL url = null;
-        URLConnection con = new URL(srcPage).openConnection();
-        con.connect();
-        InputStream is = con.getInputStream();
-        url = con.getURL();
+        URL url = new URL(srcPage);
         InputStreamReader reader = new InputStreamReader(url.openStream());
         ParserDelegator parser = new ParserDelegator();
         HTMLParser callback = new HTMLParser();
@@ -75,6 +71,14 @@ public class Crawler {
         return callback.urls;
     }
 
+    public String toRedirectedUrl(String srcUrl) throws IOException {
+        URLConnection con = new URL(srcUrl).openConnection();
+        con.connect();
+        InputStream is = con.getInputStream();
+        URL url = con.getURL();
+        return url.toString();
+    }
+
 
     public static boolean isAbsURL(String str) {
         return str.matches("^[a-z0-9]+://.+");
@@ -82,7 +86,7 @@ public class Crawler {
 
     public static URL toAbsURL(String str, URL ref) throws MalformedURLException {
         URL url = null;
-        String prefix = ref.getProtocol() + "://" + ref.getHost() + ref.getPath();
+        String prefix = ref.getProtocol() + "://" + ref.getHost();
         if (prefix.endsWith("/")) {
             prefix = prefix.substring(0, prefix.length() - 1);
         }
@@ -95,8 +99,8 @@ public class Crawler {
             String tmp = "/" + ref.getPath().substring(0, len) + "/";
             prefix += tmp.replace("//", "/");
         }
-        url = new URL(prefix + str);
 
+        url = new URL(prefix + str);
         return url;
     }
 }
