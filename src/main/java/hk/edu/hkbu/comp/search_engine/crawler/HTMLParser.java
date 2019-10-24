@@ -74,5 +74,7 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
                 encounterMetaName = true;
             }
         }
+
+
     }
 }

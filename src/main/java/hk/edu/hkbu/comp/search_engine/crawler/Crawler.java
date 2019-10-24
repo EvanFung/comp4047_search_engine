@@ -20,9 +20,9 @@ public class Crawler {
     public Crawler() {
     }
 
-    public Crawler(String[] seeds) {
+    public Crawler(String[] seeds) throws IOException {
         for (int i = 0; i < seeds.length; i++) {
-            UrlQueue.addUnvisitedUrl(seeds[i]);
+            UrlQueue.addUnvisitedUrl(toRedirectedUrl(seeds[i]));
         }
     }
 
@@ -31,6 +31,9 @@ public class Crawler {
         while (UrlQueue.getUnVisitedUrlNum() < MAXNUM) {
             //Retrieve and remove an URL from URL Pool
             String visitUrl = (String) UrlQueue.unVisitedUrlDeQueue();
+            //Transform to redirected url
+            visitUrl = toRedirectedUrl(visitUrl);
+            System.out.println("visit url : " + visitUrl);
             //add this URL to Processed URL Pool
             UrlQueue.addVisitedUrl(visitUrl);
             //TODO extract all words from this web pages. if not listed in the given blacklist and ignore list
@@ -45,7 +48,6 @@ public class Crawler {
 
             for (String url : links) {
                 if (UrlQueue.getUnVisitedUrlNum() < X) {
-                    System.out.println("now url pool has " + UrlQueue.getUnVisitedUrlNum() + " elements");
                     UrlQueue.addUnvisitedUrl(url);
                 }
             }
@@ -64,6 +66,11 @@ public class Crawler {
         for (int i = 0; i < callback.urls.size(); i++) {
             String str = callback.urls.get(i);
             if (!isAbsURL(str)) {
+                //str ?page=hkbu relative url
+//                System.out.println("str : "+str);
+
+//                System.out.println("url is : " + url.toString());
+//                System.out.println("abs : " + toAbsURL(str, url));
                 callback.urls.set(i, toAbsURL(str, url).toString());
             }
         }
@@ -86,19 +93,23 @@ public class Crawler {
 
     public static URL toAbsURL(String str, URL ref) throws MalformedURLException {
         URL url = null;
-        String prefix = ref.getProtocol() + "://" + ref.getHost();
+        String prefix = ref.getProtocol() + "://" + ref.getHost() + ref.getPath();
         if (prefix.endsWith("/")) {
             prefix = prefix.substring(0, prefix.length() - 1);
         }
-
+//     System.out.println("get prefix:" + prefix);
+//    System.out.println("get host:" + ref.getHost());
+//        System.out.println("get path:" +  ref.getPath());
+//        System.out.println("get file:" +  ref.getFile());
+//        System.out.println("str in abs : " + str);
         if (ref.getPort() > -1)
             prefix += ":" + ref.getPort();
-
-        if (!str.startsWith("/")) {
-            int len = ref.getPath().length() - ref.getFile().length();
-            String tmp = "/" + ref.getPath().substring(0, len) + "/";
-            prefix += tmp.replace("//", "/");
-        }
+//
+//        if (!str.startsWith("/")) {
+//            int len = ref.getPath().length() - ref.getFile().length();
+//            String tmp = "/" + ref.getPath().substring(0, len) + "/";
+//            prefix += tmp.replace("//", "/");
+//        }
 
         url = new URL(prefix + str);
         return url;
