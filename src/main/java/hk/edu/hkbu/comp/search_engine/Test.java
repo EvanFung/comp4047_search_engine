@@ -44,8 +44,8 @@ public class Test {
 //        is.close();
 
 //        loadKeyWord("https://www.comp.hkbu.edu.hk/v1/");
-//        Crawler crawler = new Crawler(new String[]{"http://www.comp.hkbu.edu.hk/"});
-//        crawler.crawling();
+        Crawler crawler = new Crawler(new String[]{"http://www.comp.hkbu.edu.hk/"});
+        crawler.crawling();
     }
 
     public static boolean isAbsURL(String str) {

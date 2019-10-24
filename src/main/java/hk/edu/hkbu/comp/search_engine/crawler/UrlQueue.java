@@ -56,7 +56,7 @@ public class UrlQueue {
         String visitUrl = null;
 
         visitUrl = unVisitedUrl.poll();
-        System.out.println(visitUrl + " leave queue");
+        System.out.println(visitUrl + " leave queue(url pool)");
 
         return visitUrl;
     }
@@ -70,7 +70,7 @@ public class UrlQueue {
 
         if (!visitedUrl.contains(url) && !unVisitedUrl.contains(url)) {
             unVisitedUrl.add(url);
-//            System.out.println("now url pool has :" + UrlQueue.getUnVisitedUrlNum() + " elements"); //
+            System.out.println("now url pool has :" + UrlQueue.getUnVisitedUrlNum() + " elements"); //
         }
     }
 
@@ -87,6 +87,12 @@ public class UrlQueue {
      */
     public static synchronized boolean unVisitedUrlsEmpty() {
         return unVisitedUrl.isEmpty();
+    }
+
+    public static void printUrlPool() {
+        for(String s : unVisitedUrl) {
+            System.out.println("[URL pool] : " + s + "element");
+        }
     }
 
 
