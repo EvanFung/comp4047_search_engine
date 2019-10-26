@@ -20,61 +20,41 @@ import java.net.URL;
 public class DownloadFile {
 
     private void saveFile(InputStream data, String filePath) {
-        try {
-            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-            BufferedInputStream in = new BufferedInputStream(data);
+        File result = new File(filePath);
+        result.getParentFile().mkdirs();
+
+        try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(result));
+             BufferedInputStream in = new BufferedInputStream(data)) {
             int r;
             while ((r = in.read()) != -1) {
                 out.write((byte) r);
             }
-            in.close();
-            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public String getFileNameByUrl(String url) {
+        System.out.println(url);
         url = url.substring(7); //remove http://
-        url = url.replaceAll("[\\?/:*|<>\"]", "_"); //将特殊字符替换，以生成合法的本地文件名
+//        url = url.replaceAll("[\\?/:*|<>\"]", "_"); //将特殊字符替换，以生成合法的本地文件名
         return url;
     }
 
     public String downloadFile(String url) {
         String filePath = "";
-        HttpRequestRetryHandler requestRetryHandler = new HttpRequestRetryHandler() {
-            @Override
-            public boolean retryRequest(IOException e, int i, HttpContext httpContext) {
-                if (i > 5) {
-                    //if retry more than 5 times.
-                    return false;
-                }
-                return true;
-            }
-        };
-
-        CloseableHttpClient httpClient = HttpClients.custom().setRetryHandler(requestRetryHandler).build();
-        RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(5000).setConnectTimeout(5000).build();
-        HttpGet httpGet = new HttpGet(url);
-        httpGet.setConfig(requestConfig);
-        CloseableHttpResponse response;
+        URL urlObject;
+        InputStream is = null;
         try {
-            response = httpClient.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
-                System.err.println("Method failed: " + statusLine);
-                filePath = null;
-            }
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                InputStream entityContent = entity.getContent();
-                filePath = "../html/" + getFileNameByUrl(url);
-                saveFile(entityContent, filePath);
-            }
+            urlObject = new URL(url);
+            is = urlObject.openStream();
+            filePath = "target/html/" + getFileNameByUrl(url);
+            saveFile(is, filePath);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("successfully download file " + filePath + " to local");
+        System.out.println("Successfully downloaded" + filePath + "to /html folder"); // not very bad
         return filePath;
     }
 }

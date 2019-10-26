@@ -10,6 +10,8 @@ import javax.swing.text.html.parser.ParserDelegator;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -35,17 +37,21 @@ public class Crawler {
 
 
     public void crawling() throws IOException {
-        while (!UrlQueue.isUnVisitedUrlEmpty() && downloadFileNum < MAXNUM && UrlQueue.getUnvisitedUrlSize() < 99) {
-            String visitUrl = (String) UrlQueue.unVisitedUrlDeQueue();
-//            DownloadFile downloadFile = new DownloadFile();
-//            downloadFile.downloadFile(visitUrl);
-            downloadFileNum++;
-            UrlQueue.addVisitedUrl(visitUrl);
-            //TODO extract all words from this web pages. if not listed in the given blacklist and ignore list
-            //store the words, URL with its title, the number of word containing in the page.
-            List<String> links = getURLs(visitUrl);
-            for (String url : links) {
-                UrlQueue.addUnvisitedUrl(url);
+        while (downloadFileNum < MAXNUM) {
+            if(!UrlQueue.isUnVisitedUrlEmpty()) {
+                String visitUrl = (String) UrlQueue.unVisitedUrlDeQueue();
+                DownloadFile downloadFile = new DownloadFile();
+                downloadFile.downloadFile(visitUrl);
+                downloadFileNum++;
+                UrlQueue.addVisitedUrl(visitUrl);
+                //TODO extract all words from this web pages. if not listed in the given blacklist and ignore list
+                //store the words, URL with its title, the number of word containing in the page.
+                List<String> links = getURLs(visitUrl);
+                System.out.println("the size of links is " + links.size());
+
+                for (String url : links) {
+                    UrlQueue.addUnvisitedUrl(url);
+                }
             }
         }
     }
@@ -78,14 +84,10 @@ public class Crawler {
 
     public static URL toAbsURL(String str, URL ref) throws MalformedURLException {
         URL url = null;
+
         String prefix = ref.getProtocol() + "://" + ref.getHost();
-//        //TODO ADD delete /
-//        if (prefix.endsWith("/")) {
-//            prefix = prefix.substring(0, prefix.length() - 1);
-//        }
         if (ref.getPort() > -1)
             prefix += ":" + ref.getPort();
-
         if (!str.startsWith("/")) {
             int len = ref.getPath().length() - ref.getFile().length();
             String tmp = "/" + ref.getPath().substring(0, len) + "/";
@@ -94,6 +96,25 @@ public class Crawler {
         url = new URL(prefix + str);
 
         return url;
+
+    }
+
+
+    public static String getAbsoluteURL(String baseURI, String relativePath){
+        String abURL=null;
+        try {
+            URI base=new URI(baseURI);//基本网页URI
+            URI abs=base.resolve(relativePath);//解析于上述网页的相对URL，得到绝对URI
+            URL absURL=abs.toURL();//转成URL
+            System.out.println(absURL);
+            abURL = absURL.toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } finally{
+            return abURL;
+        }
     }
 
 
