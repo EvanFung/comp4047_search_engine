@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+
 public class SensitiveFilterService {
     private Map sensitiveWordMap = null;
 
@@ -17,24 +18,19 @@ public class SensitiveFilterService {
     public static int maxMatchType = 2;
 
 
-    // 单例
-    private static SensitiveFilterService instance = null;
-
-
     // 构造函数，初始化敏感词库
-    private SensitiveFilterService() {
-
-
-        sensitiveWordMap = new SensitiveWordInit().initKeyWord();
-    }
-
-
-    // 获取单例
-    public static SensitiveFilterService getInstance() {
-        if (null == instance) {
-            instance = new SensitiveFilterService();
+    public SensitiveFilterService(SensitiveType type) {
+        if(type == SensitiveType.word) {
+            sensitiveWordMap = new SensitiveWordInit().initKeyWord();
         }
-        return instance;
+
+        if(type == SensitiveType.url) {
+            sensitiveWordMap = new SensitiveWordInit().initBlackListUrl();
+        }
+
+        if(type == SensitiveType.ignoreWord) {
+            sensitiveWordMap = new SensitiveWordInit().initIgnoreWord();
+        }
     }
 
 
@@ -152,4 +148,5 @@ public class SensitiveFilterService {
         }
         return matchFlag;
     }
+
 }
