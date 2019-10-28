@@ -16,10 +16,24 @@ public class SensitiveWordInit {
 
     // 初始化敏感字库
     public Map initKeyWord() {
+        //black list of word
 // 读取敏感词库 ,存入Set中
-        Set<String> wordSet = readSensitiveWordFile();
+        Set<String> wordSet = readSensitiveWordFile("./src/main/java/hk/edu/hkbu/comp/search_engine/constant/blacklist_of_words.txt");
+
 // 将敏感词库加入到HashMap中//确定有穷自动机DFA
         return addSensitiveWordToHashMap(wordSet);
+    }
+
+
+    public Map initBlackListUrl() {
+        Set<String> blackListUrl = readSensitiveWordFile("./src/main/java/hk/edu/hkbu/comp/search_engine/constant/blacklist_of_urls.txt");
+        return addSensitiveWordToHashMap(blackListUrl);
+    }
+
+
+    public Map initIgnoreWord() {
+        Set<String> blackListUrl = readSensitiveWordFile("./src/main/java/hk/edu/hkbu/comp/search_engine/constant/ignore_of_words.txt");
+        return addSensitiveWordToHashMap(blackListUrl);
     }
 
 
@@ -60,7 +74,7 @@ public class SensitiveWordInit {
 
 
     // 读取敏感词库 ,存入HashMap中
-    private Set<String> readSensitiveWordFile() {
+    private Set<String> readSensitiveWordFile(String fileName) {
 
 
         Set<String> wordSet = null;
@@ -75,8 +89,7 @@ public class SensitiveWordInit {
 
 
 //敏感词库
-        File file = new File(
-                "./src/main/java/hk/edu/hkbu/comp/search_engine/constant/URLSensitiveWord.txt");
+        File file = new File(fileName);
         try {
             // 读取文件输入流
             InputStreamReader read = new InputStreamReader(new FileInputStream(
@@ -86,15 +99,13 @@ public class SensitiveWordInit {
             // 文件是否是文件 和 是否存在
             if (file.isFile() && file.exists()) {
 
-
                 wordSet = new HashSet<String>();
-            // StringBuffer sb = new StringBuffer();
-            // BufferedReader是包装类，先把字符读到缓存里，到缓存满了，再读入内存，提高了读的效率。
+                // BufferedReader是包装类，先把字符读到缓存里，到缓存满了，再读入内存，提高了读的效率。
                 BufferedReader br = new BufferedReader(read);
                 String txt = null;
 
 
-            // 读取文件，将文件内容放入到set中
+                // 读取文件，将文件内容放入到set中
                 while ((txt = br.readLine()) != null) {
                     wordSet.add(txt);
                 }
@@ -123,6 +134,10 @@ public class SensitiveWordInit {
     }
 
 
+
+
+
+
     // 将HashSet中的敏感词,存入HashMap中
     private Map addSensitiveWordToHashMap(Set<String> wordSet) {
 
@@ -145,7 +160,7 @@ public class SensitiveWordInit {
 // 不存在则，则构建一个map，同时将isEnd设置为0，因为他不是最后一个
                 else {
 // 设置标志位
-                    Map<String, String> newMap = new HashMap<String, String>();
+                    Map<String, String> newMap = new HashMap<>();
                     newMap.put("isEnd", "0");
 // 添加到集合
                     nowMap.put(keyChar, newMap);

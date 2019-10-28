@@ -3,6 +3,7 @@ package hk.edu.hkbu.comp.search_engine;
 import hk.edu.hkbu.comp.search_engine.crawler.Crawler;
 import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
 import hk.edu.hkbu.comp.search_engine.utils.SensitiveFilterService;
+import hk.edu.hkbu.comp.search_engine.utils.SensitiveType;
 
 
 import javax.swing.text.html.parser.ParserDelegator;
@@ -11,6 +12,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static hk.edu.hkbu.comp.search_engine.crawler.Crawler.getURLs;
 
@@ -24,12 +27,12 @@ public class Test {
 //
 //
 //
-//        SensitiveFilterService filter = SensitiveFilterService.getInstance();
+//        SensitiveFilterService filter = new SensitiveFilterService(SensitiveType.ignoreWord);
 //        String txt = "温家宝今天想去深圳参观，带上了习近平。参观完后还得赶飞机跟日本参与国家发展和改革委员会会议";
 //        //如果需要过滤则用“”替换
 //        //如果需要屏蔽，则用“*”替换
 //        String hou = filter.replaceSensitiveWord(txt, 1, "*");
-//        int a = filter.CheckSensitiveWord("hello",0,1);
+//        int a = filter.CheckSensitiveWord("温家宝",0,1);
 //        System.out.println(a);
 //        System.out.println("替换前的文字为：" + txt);
 //        System.out.println("替换后的文字为：" + hou);
@@ -46,6 +49,9 @@ public class Test {
 //        loadKeyWord("https://www.comp.hkbu.edu.hk/v1/");
 //        Crawler crawler = new Crawler(new String[]{"http://www.comp.hkbu.edu.hk/"});
 //        crawler.crawling();
+
+        //it can check whether there is a javacript: url
+        Pattern p = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))",Pattern.DOTALL);
     }
 
     public static boolean isAbsURL(String str) {
