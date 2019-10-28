@@ -11,6 +11,7 @@ public class UrlFilter implements FilterTool {
         int level = filter.CheckSensitiveWord(url, 0, 1);
         if(level > 0 )
             return false;
+
         if (
                 url.contains("javascript:")
                         || url.contains("/*")
