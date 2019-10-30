@@ -5,5 +5,6 @@ import java.util.Set;
 
 public class MatchingTable
 {
-    private static Set<String> processedUrlPool = new HashSet<>();
+    private Set<String> matching = new HashSet<>();
+
 }

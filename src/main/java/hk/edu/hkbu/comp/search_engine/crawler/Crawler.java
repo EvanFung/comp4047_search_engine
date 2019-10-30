@@ -1,5 +1,6 @@
 package hk.edu.hkbu.comp.search_engine.crawler;
 import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
+import hk.edu.hkbu.comp.search_engine.model.MatchingTable;
 import hk.edu.hkbu.comp.search_engine.model.Page;
 
 import javax.swing.text.html.parser.ParserDelegator;
@@ -17,6 +18,8 @@ import java.util.regex.Pattern;
  *   pull data process flow
  * */
 public class Crawler {
+
+    MatchingTable matchingTable;
     //maximum number of web pages that crawled
     final int Y = 100;
     final int X = 10;
@@ -31,7 +34,8 @@ public class Crawler {
     public Crawler() {
     }
 
-    public Crawler(String seed, int x, int y) throws IOException {
+    public Crawler(MatchingTable _matchingTable, String seed, int x, int y) throws IOException {
+        matchingTable = _matchingTable;
         UrlQueue.addToUrlPool(seed);
         this.x = x;
         this.y = y;
@@ -39,7 +43,7 @@ public class Crawler {
 
 
     public void crawling() throws IOException {
-        while (UrlQueue.getProcessedUrlPoolSize() < y) {
+        while (UrlQueue.getProcessedUrlPoolSize() < y && UrlQueue.getUrlPoolSize() > 0) {
             //Retrieve and remove an URL from URL Pool
             String visitUrl = (String) UrlQueue.urlPoolDeQueue();
             //Transform to redirected url
@@ -56,11 +60,16 @@ public class Crawler {
             //get the corresponding web page.
 
             ConnectionPack connectionPack = getConnectionPack(visitUrl);
-
-            List<String> links = getURLs(connectionPack);
             Page page = getPage(connectionPack);
 
+            if(connectionPack == null || page == null)
+            {
+                UrlQueue.addToDeadpool(visitUrl);
+                System.out.println("Add to deadpool: " + visitUrl);
+                continue;
+            }
 
+            List<String> links = getURLs(connectionPack);
 
             for (String url : links) {
                 if (UrlQueue.getUrlPoolSize() < x ) {
@@ -80,32 +89,44 @@ public class Crawler {
 
     public Page getPage(ConnectionPack cP) throws IOException {
         Page page = new Page();
+        try {
+            ParserDelegator parser = new ParserDelegator();
+            HTMLParser callback = new HTMLParser();
+            parser.parse(cP.getReader(), callback, true);
+            page.setTitle(callback.title);
+            page.setUrl(cP.getUrl().toString());
 
-        ParserDelegator parser = new ParserDelegator();
-        HTMLParser callback = new HTMLParser();
-        parser.parse(cP.getReader(), callback, true);
-        page.setTitle(callback.title);
-        page.setUrl(cP.getUrl().toString());
+            page.setWords(getUniqueWords(cP.getContentString()));
 
-        page.setWords(getUniqueWords(cP.getContentString()));
-
-        page.setWordCount(page.getWords().size());
+            page.setWordCount(page.getWords().size());
+        }catch (Exception e) {
+//            e.printStackTrace();
+            return null;
+        }
         return page;
     }
 
     public ConnectionPack getConnectionPack(String srcPage) throws IOException
     {
         ConnectionPack cP = new ConnectionPack();
-        cP.setUrl(new URL(srcPage));
+        try{
 
-        HttpURLConnection httpURLConnection = (HttpURLConnection) cP.getUrl().openConnection();
-        httpURLConnection.setInstanceFollowRedirects(false);
+            cP.setUrl(new URL(srcPage));
 
-        cP.setCode(httpURLConnection.getResponseCode());
-        //content of the html
-        cP.setContentString(loadWebConnect(srcPage));
-        cP.setConnection(httpURLConnection);
-        cP.setReader(new InputStreamReader(httpURLConnection.getInputStream()));
+            HttpURLConnection httpURLConnection = (HttpURLConnection) cP.getUrl().openConnection();
+            httpURLConnection.setInstanceFollowRedirects(false);
+
+            cP.setCode(httpURLConnection.getResponseCode());
+            //content of the html
+            String connect = loadWebConnect(srcPage);
+            if(connect == null) return null;
+            cP.setContentString(loadWebConnect(srcPage));
+            cP.setConnection(httpURLConnection);
+            cP.setReader(new InputStreamReader(httpURLConnection.getInputStream()));
+        }catch (Exception e) {
+//            e.printStackTrace();
+            return null;
+        }
 
         return cP;
     }
@@ -205,13 +226,16 @@ public class Crawler {
             }
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
+            return null;
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return null;
         } finally {
             try {
                 if (is != null) is.close();
             } catch (IOException ioe) {
                 // nothing to see here
+                return null;
             }
         }
 

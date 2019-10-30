@@ -2,9 +2,9 @@ package hk.edu.hkbu.comp.search_engine;
 
 import hk.edu.hkbu.comp.search_engine.crawler.Crawler;
 import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
+import hk.edu.hkbu.comp.search_engine.model.MatchingTable;
 import hk.edu.hkbu.comp.search_engine.utils.SensitiveFilterService;
 import hk.edu.hkbu.comp.search_engine.utils.SensitiveType;
-
 
 import javax.swing.text.html.parser.ParserDelegator;
 import java.io.IOException;
@@ -17,8 +17,9 @@ import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        Crawler crawler = new Crawler("http://www.comp.hkbu.edu.hk/", 10,20);
-//        crawler.crawling();
+        MatchingTable matchingTable = new MatchingTable();
+        Crawler crawler = new Crawler(matchingTable, "https://2cat.komica.org/~tedc21thc/anime/ ", 10,20);
+        crawler.crawling();
 
 //    String s =     loadPlainText("https://matthung0807.blogspot.com/2019/01/java-serializedeserialize.html");
 //        System.out.println(s);
