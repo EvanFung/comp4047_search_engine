@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class UrlFilter implements FilterTool {
     @Override
-    public boolean accpect(String url) {
+    public boolean accept(String url) {
         //blacklist of url
         SensitiveFilterService filter = new SensitiveFilterService(SensitiveType.url);
         int level = filter.CheckSensitiveWord(url, 0, 1);
