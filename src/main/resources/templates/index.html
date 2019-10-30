@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{webjars/bootstrap/4.3.1/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .form-control{
+            margin-top:25px;
+            width: 50%;
+        }
+        .btn {
+            background-color: DodgerBlue;
+            border: none;
+            color: white;
+            margin-top:25px;
+            margin-left:5px;
+
+            font-size: 13px;
+            cursor: pointer;
+        }
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: RoyalBlue;
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <form class="form-inline md-form form-sm mt-0">
+        <input class="form-control form-control-sm ml-3 w-25" type="text" placeholder="Search"
+               aria-label="Search">
+        <button class="btn">Search  <i class="fa fa-search"></i></button>
+    </form>
+</main>
+</body>
+</html>
