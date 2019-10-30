@@ -1,16 +1,29 @@
 package hk.edu.hkbu.comp.search_engine.model;
 
+import java.util.List;
+
 public class Page {
     private String url;
     private String title;
+    private List<String> words;
     private int wordCount;
 
-    public Page() {}
+    public Page() {
+    }
 
-    public Page(String url, String title, int wordCount) {
+    public Page(String url, String title, List<String> words, int wordCount) {
         this.url = url;
         this.title = title;
+        this.words = words;
         this.wordCount = wordCount;
+    }
+
+    public List<String> getWords() {
+        return words;
+    }
+
+    public void setWords(List<String> words) {
+        this.words = words;
     }
 
     public String getUrl() {
@@ -37,7 +50,7 @@ public class Page {
         this.wordCount = wordCount;
     }
 
-    public void increamentWord() {
+    public void incrementWord() {
         wordCount++;
     }
 }

@@ -18,21 +18,13 @@ import java.util.regex.Pattern;
 public class Test {
     public static void main(String[] args) throws Exception {
         Crawler crawler = new Crawler("http://www.comp.hkbu.edu.hk/", 10,20);
-        crawler.crawling();
-//        List<String> urls = crawler.getURLs("http://www.comp.hkbu.edu.hk/");
-////        List<String> urls = crawler.getURLs("https://www.hkbu.edu.hk/eng/main/index.jsp");
-//        for (String s : urls) {
-//            System.out.println(s);
-//        }
-//
-//
-//
+//        crawler.crawling();
 
+//    String s =     loadPlainText("https://matthung0807.blogspot.com/2019/01/java-serializedeserialize.html");
+//        System.out.println(s);
 
-
+//        crawler.setPage(crawler.getConnectionPack("https://matthung0807.blogspot.com/2019/01/java-serializedeserialize.html"));
     }
-
-
 
 
     public static String loadPlainText(String urlString) throws IOException {
@@ -43,7 +35,7 @@ public class Test {
         InputStreamReader reader = new InputStreamReader(url.openStream());
         parser.parse(reader, callback, true); // call MyParserCallback to process the URL stream
 
-        return callback.content;
+        return callback.title;
     }
 
 
