@@ -28,33 +28,50 @@ public class Crawler {
 
 
     public void crawling() throws IOException {
-        while (UrlQueue.getUnVisitedUrlNum() < MAXNUM) {
+        while (UrlQueue.getVisitedUrlNum() < MAXNUM && UrlQueue.getUnVisitedUrlNum() > 0) {
+
+            System.out.println("List of unVisited Pool: ");
+
             //Retrieve and remove an URL from URL Pool
             String visitUrl = (String) UrlQueue.unVisitedUrlDeQueue();
             //Transform to redirected url
             visitUrl = toRedirectedUrl(visitUrl);
             System.out.println("visit url : " + visitUrl);
-            //add this URL to Processed URL Pool
-            UrlQueue.addVisitedUrl(visitUrl);
+
+
             //TODO extract all words from this web pages. if not listed in the given blacklist and ignore list
             //Extract all words from this web page.
             //For each word, if it is not listed in the given blacklist and ignore list, store the following items:
             // i) the word,
             // ii) URL with its title, and
             // iii) number of the word containing in the page.
+
+
             //TODO store the words, URL with its title, the number of word containing in the page.
             //get the corresponding web page.
             List<String> links = getURLs(visitUrl);
 
+            //add this URL to Processed URL Pool
+            UrlQueue.addVisitedUrl(visitUrl);
+
             for (String url : links) {
-                if (UrlQueue.getUnVisitedUrlNum() < X) {
+                if (UrlQueue.getUnVisitedUrlNum() < X && IsReturn200(url)) {
+
                     UrlQueue.addUnvisitedUrl(url);
                 }
             }
-        }
 
+
+        }
     }
 
+    public static boolean IsReturn200(String srcPage) throws IOException
+    {
+        URL url = new URL(srcPage);
+        HttpURLConnection huc = (HttpURLConnection)url.openConnection();
+        huc.connect();
+        return huc.getResponseCode() == 200 ? true: false;
+    }
 
     public static List<String> getURLs(String srcPage) throws IOException {
         URL url = new URL(srcPage);

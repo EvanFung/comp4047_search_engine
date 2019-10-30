@@ -19,10 +19,10 @@ import static hk.edu.hkbu.comp.search_engine.crawler.Crawler.getURLs;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        List<String> list = getURLs( "http://www.comp.hkbu.edu.hk/");
-        for (String s2 : list) {
-            System.out.println(s2);
-        }
+//        List<String> list = getURLs( "http://www.comp.hkbu.edu.hk/");
+//        for (String s2 : list) {
+//            System.out.println(s2);
+//        }
 
 //
 //
@@ -47,11 +47,11 @@ public class Test {
 //        is.close();
 
 //        loadKeyWord("https://www.comp.hkbu.edu.hk/v1/");
-//        Crawler crawler = new Crawler(new String[]{"http://www.comp.hkbu.edu.hk/"});
-//        crawler.crawling();
+        Crawler crawler = new Crawler(new String[]{"http://www.comp.hkbu.edu.hk/"});
+        crawler.crawling();
 
         //it can check whether there is a javacript: url
-        Pattern p = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))",Pattern.DOTALL);
+//        Pattern p = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))",Pattern.DOTALL);
     }
 
     public static boolean isAbsURL(String str) {

@@ -7,26 +7,27 @@ import java.util.Set;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.*;
 
 public class UrlQueue {
 
     //processed url pool
     private static Set<String> visitedUrl = new HashSet<>();
     //url pool
-    private static Queue<String> unVisitedUrl = new PriorityQueue<>();
+    private static Queue<String> unVisitedUrl = new LinkedList<>();
 
 
-    private UrlQueue() {
+    private UrlQueue() {}
 
-    }
-
-    public static synchronized void addVisitedUrl(final String url) {
+    public static synchronized void addVisitedUrl(final String url)
+    {
         visitedUrl.add(url);
         System.out.println("now processed url has ：" + UrlQueue.getVisitedUrlNum() + " elements");
     }
 
 
-    public static synchronized void removeVisitedUrl(final String url) {
+    public static synchronized void removeVisitedUrl(final String url)
+    {
         visitedUrl.remove(url);
     }
 
@@ -35,16 +36,18 @@ public class UrlQueue {
      *
      * @return The number that has been visited.
      */
-    public static synchronized int getVisitedUrlNum() {
+    public static synchronized int getVisitedUrlNum()
+    {
         return visitedUrl.size();
     }
 
     /**
      * @return Queue<String>
      */
-    public static synchronized Queue<String> getUnVisitedUrl() {
+    public static synchronized Queue<String> getUnVisitedUrl()
+    {
         return unVisitedUrl;
-    }
+}
 
     /**
      *
@@ -68,11 +71,17 @@ public class UrlQueue {
      */
     public static void addUnvisitedUrl(final String url) {
 
-        if (!visitedUrl.contains(url) && !unVisitedUrl.contains(url)) {
+        if (!visitedUrl.contains(url) && !unVisitedUrl.contains(url))
+        {
             unVisitedUrl.add(url);
+            System.out.println("addUnvisitedUrl: " + url);
             System.out.println("now url pool has :" + UrlQueue.getUnVisitedUrlNum() + " elements"); //
         }
     }
+
+
+
+
 
     /**
      * @return int
