@@ -1,4 +1,4 @@
-package hk.edu.hkbu.comp.search_engine;
+package hk.edu.hkbu.comp.search_engine.webserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
