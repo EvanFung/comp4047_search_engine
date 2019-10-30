@@ -19,7 +19,6 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
     public boolean encounterMetaName = false;
 
     public void handleStartTag(HTML.Tag tag, MutableAttributeSet attrSet, int pos) {
-        UrlFilter urlFilter = new UrlFilter();
         if (tag == HTML.Tag.SCRIPT) {
             isScript = true;
         } else {
@@ -43,7 +42,7 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
                 Object aname = e.nextElement();
                 if (aname.toString().equals("href")) {
                     String u = (String) attrSet.getAttribute(aname);
-                    if (urls.size() < 1024 && !urls.contains(u) && urlFilter.accpect(u))
+                    if (urls.size() < 1024 && !urls.contains(u))
                         urls.add(u);
                 }
             }
@@ -74,7 +73,6 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
                 encounterMetaName = true;
             }
         }
-
 
     }
 }

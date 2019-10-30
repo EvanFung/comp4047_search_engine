@@ -7,4 +7,3 @@ message
 school
 journalism
 language
-温家宝
