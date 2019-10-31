@@ -43,6 +43,8 @@ public class SplitWord {
 
         FilterTool ignoreWordFilter = new IgnoreWordFilter();
         Iterator<String> it = processedUrlQueue.iterator();
+        FileOutputStream fileOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
         while (it.hasNext()) {
             String url = it.next();
             String title = HTMLParser.loadTitleText(url);
@@ -66,15 +68,19 @@ public class SplitWord {
             System.out.println("url -- " + page.getUrl());
             System.out.println("title -- " + page.getTitle());
             System.out.println("count -- " + page.getWordCount());
-            //TODO there are some url that are no title ,
+            //TODO there are some url that has no title ,
+
             //serialized an object
-//            FileOutputStream fileOutputStream = new FileOutputStream(wordDir + getFileNameByTitle(title) + ".ser");
-//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-//            objectOutputStream.writeObject(objectOutputStream);
-//            fileOutputStream.close();
-//            objectOutputStream.close();
+            //TODO you guys thinks a proper name for the file that should be unique...wordSize is not an unique name.
+            //it just for demo how to serialized an object
+            fileOutputStream = new FileOutputStream(wordSize + ".ser");
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(page);
 
         }
+
+        fileOutputStream.close();
+        objectOutputStream.close();
 
     }
 
@@ -111,6 +117,9 @@ public class SplitWord {
             if (!uniqueWords.contains(w))
                 uniqueWords.add(w);
         }
+
+
+        
 
         return uniqueWords;
     }

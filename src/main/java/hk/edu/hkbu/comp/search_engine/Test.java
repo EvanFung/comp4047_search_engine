@@ -38,8 +38,8 @@ public class Test {
 
 
 
-//        SplitWord splitWord = new SplitWord(urls, "/target/wordsDir/");
-//        splitWord.split();
+        SplitWord splitWord = new SplitWord(urls, "/target/wordsDir/");
+        splitWord.split();
 
 //        List<String> s = Crawler.getUniqueWords(Utils.toUsefulText(sb));
 
