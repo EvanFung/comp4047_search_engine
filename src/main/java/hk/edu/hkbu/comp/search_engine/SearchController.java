@@ -1,18 +1,30 @@
 package hk.edu.hkbu.comp.search_engine;
+import hk.edu.hkbu.comp.search_engine.model.Greeting;
+import hk.edu.hkbu.comp.search_engine.model.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 
 @Controller
-public class GreetingController {
+public class SearchController {
 
-    @GetMapping("/greeting")
-    public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
-        model.addAttribute("name", name);
-        return "greeting";
+    @GetMapping("/")
+    public String greeting(String name, Model model) {
+        model.addAttribute("query", new Query());
+        return "index";//view
+    }
+
+    @PostMapping("/")
+    public String greetingSubmit(@ModelAttribute Query query) {
+        System.out.println(query.getQueryWord());
+        System.out.println("123");
+        System.out.println(getSearchEquation(query.getQueryWord()));
+        return "index";//view
     }
 
     public static String getSearchEquation() {

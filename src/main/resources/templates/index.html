@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{webjars/bootstrap/4.3.1/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/main.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<main class="container">
+    <div class="row">
+     <div class="col-12">
+         <form class="form-inline md-form form-sm mt-0" th:action="@{/}" th:object="${query}" method="POST" action="#">
+             <input class="form-control form-control-sm" type="text" placeholder="Search" th:field="*{queryWord}"
+                    aria-label="Search">
+             <button type="submit" class="btn">Search <i class="fa fa-search"></i></button>
+         </form>
+     </div>
+    </div>
+    <div class="row">
+       <div class="size-box"></div>
+    </div>
+    <div class="row result-body">
+        <div class="col-12">
+            <div class="row body-title">
+                <div class="col-12">
+                    <h3 th:if="${query.getQueryWord() != null}" th:text="${query.getQueryWord()}"></h3>
+                    <a href="#"><h3>title of the search result</h3></a>
+                    <cite>url of the page</cite>
+                </div>
+            </div>
+            <div class="row body-content">
+                <div class="col-12">
+                    partial content of the search result
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row footer fixed-bottom">
+        <div class="col-6 text-center my-auto">
+            <p>Contact us</p>
+        </div>
+        <div class="col-6 my-auto">
+            <p>Hong Kong Baptist university</p>
+        </div>
+    </div>
+</main>
+</body>
+</html>
