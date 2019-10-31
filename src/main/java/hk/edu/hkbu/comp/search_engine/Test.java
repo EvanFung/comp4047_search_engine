@@ -2,6 +2,7 @@ package hk.edu.hkbu.comp.search_engine;
 
 import hk.edu.hkbu.comp.search_engine.crawler.Crawler;
 import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
+import hk.edu.hkbu.comp.search_engine.crawler.UrlFilter;
 import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
 import hk.edu.hkbu.comp.search_engine.model.Page;
 import hk.edu.hkbu.comp.search_engine.model.WordTable;
@@ -23,8 +24,22 @@ public class Test {
         Crawler crawler = new Crawler(wordTable,"https://www.comp.hkbu.edu.hk/v1/",10,20);
         Set<String> urls = crawler.crawling();
 
-        SplitWord splitWord = new SplitWord(urls, "/target/wordsDir/");
-        splitWord.split();
+
+
+        //test unit for the url filter
+//        UrlFilter urlFilter = new UrlFilter();
+//        boolean isAccept = urlFilter.accept("http://www.sci.hkbu.edu.hk/eng/about-us/deans-message/sahudhasu");
+//        boolean isAccept = urlFilter.accept("http://www.sci.hkbu.edu.hk/eng/about-us/");
+
+//        boolean isAccept = urlFilter.accept("http://www.comp.hkbu.edu.hk/v1/?page=people");
+//        System.out.println(isAccept);
+
+
+
+
+
+//        SplitWord splitWord = new SplitWord(urls, "/target/wordsDir/");
+//        splitWord.split();
 
 //        List<String> s = Crawler.getUniqueWords(Utils.toUsefulText(sb));
 
@@ -51,22 +66,5 @@ public class Test {
 //
 //        crawler.setPage(crawler.getConnectionPack("https://matthung0807.blogspot.com/2019/01/java-serializedeserialize.html"));
     }
-
-
-
-
-
-
-
-
-    public static void loadKeyWord(String urlString) throws IOException {
-        HTMLParser callback = new HTMLParser();
-        ParserDelegator parser = new ParserDelegator();
-        URL url = new URL(urlString);
-        InputStreamReader reader = new InputStreamReader(url.openStream());
-        parser.parse(reader, callback, true);
-        System.out.println(callback.keywordContent);
-    }
-
 
 }
