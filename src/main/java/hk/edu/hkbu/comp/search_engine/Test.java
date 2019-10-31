@@ -2,109 +2,52 @@ package hk.edu.hkbu.comp.search_engine;
 
 import hk.edu.hkbu.comp.search_engine.crawler.Crawler;
 import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
-import hk.edu.hkbu.comp.search_engine.utils.SensitiveFilterService;
-import hk.edu.hkbu.comp.search_engine.utils.SensitiveType;
-
+import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
+import hk.edu.hkbu.comp.search_engine.model.Page;
+import hk.edu.hkbu.comp.search_engine.model.WordTable;
 
 import javax.swing.text.html.parser.ParserDelegator;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        //       Crawler crawler = new Crawler("http://www.comp.hkbu.edu.hk/", 10,100);
-        //  crawler.crawling();
+        WordTable wordTable = new WordTable();
+         String sb =  Crawler.loadWebConnect("https://www.bbc.co.uk/news");
+
+        List<String> s = Crawler.getUniqueWords(sb);
+
+//        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");
+//        Page page = Crawler.getPage(connectionPack);
 //
-//        System.out.println(getSearchEquation());
+        int i = 0;
+        for (String word:s)
+        {
+            System.out.print(word + " ");
+            if (++i % 20 == 0) System.out.println();
+        }
+
+
+
+//        wordTable.addPageToWord("apple", new Page("https://www.google.com/search?q=apple",  "Apple",  new ArrayList<>()));
+//        wordTable.addPageToWord("banana", new Page("https://www.google.com/search?q=banana",  "Apple",  new ArrayList<>()));
+//        wordTable.addPageToWord("apple", new Page("https://www.apple.com/hk/",  "100",  new ArrayList<>()));
+//        wordTable.addPageToWord("apple", new Page("https://hk.appledaily.com",  "good",  new ArrayList<>()));
+//        wordTable.printAll();
+
+
+//        Crawler crawler = new Crawler(wordTable, "https://2cat.komica.org/~tedc21thc/anime/ ", 10,20);
+//        crawler.crawling();
 //
-//        getResult(getSearchEquation());
+//        String s = loadPlainText("https://matthung0807.blogspot.com/2019/01/java-serializedeserialize.html");
+//        System.out.println(s);
+//
+//        crawler.setPage(crawler.getConnectionPack("https://matthung0807.blogspot.com/2019/01/java-serializedeserialize.html"));
     }
 
-//public static String getSearchEquation() {
-//    //String test = "APPLE AnD ORANGE Pear";
-//    String test = "Apple NOT ( Pear OR Corn ) AND ASD SAD NOT (pear and os)";
-//
-//    test = test.toUpperCase();
-//    String[] parts = test.split(" ");
-////            System.out.println(parts[0]);
-////            System.out.println(parts[1]);
-////            System.out.println(parts[2]);
-//    boolean nextEqualsKeywords = true;
-//    String SearchEquation = "";
-//    for (int i = 0; i < parts.length; i++) {
-//        if (parts[i].equals("")) {
-//
-//        } else if (parts[i].equals("AND")) {
-//            //System.out.print(" && ");
-//            SearchEquation += " && ";
-//            nextEqualsKeywords = true;
-//        } else if (parts[i].equals("OR")) {
-//            // System.out.print(" || ");
-//            SearchEquation += " || ";
-//            nextEqualsKeywords = true;
-//        } else if (parts[i].equals("NOT")) {
-//            //System.out.print(" ! ");
-//            SearchEquation += " ! ";
-//            nextEqualsKeywords = true;
-//        } else if (parts[i].equals("(")) {
-//            // System.out.print(" ( ");
-//            SearchEquation += "( ";
-//            nextEqualsKeywords = true;
-//        } else if (parts[i].equals(")")) {
-//            //System.out.print(" ) ");
-//            SearchEquation += " ) ";
-//            nextEqualsKeywords = true;
-//        } else {
-//            if (nextEqualsKeywords == false)
-//                //System.out.print(" && ");
-//                SearchEquation += " && ";
-//            if (parts[i].substring(0, 1).equals("("))
-//                // System.out.print(" ( " + parts[i].substring(1, parts[i].length()));
-//                SearchEquation += "( " + parts[i].substring(1, parts[i].length());
-//            else if (parts[i].substring(parts[i].length() - 1).equals(")"))
-//                // System.out.print(parts[i].substring(0, parts[i].length() - 1) + " ) ");
-//                SearchEquation += parts[i].substring(0, parts[i].length() - 1) + " ) ";
-//            else
-//                // System.out.print(parts[i]);
-//                SearchEquation += parts[i];
-//            nextEqualsKeywords = false;
-//
-//        }
-//    }
-//    //System.out.println(SearchEquation);
-//    return  SearchEquation;
-//}
-//
-//    public static void getResult(String SearchEquation) {
-//        ArrayList<String> tempArray = new ArrayList<>();
-//        String temp = "";
-//        boolean isBracketsOpen = false;
-//            String[] parts = SearchEquation.split(" ");
-//            for (int i = 0; i < parts.length; i++) {
-//                if (isBracketsOpen == true && !parts[i].equals(")")) {
-//                    temp += parts[i] + " ";
-//                }
-//                if (parts[i].equals("(")) {
-//                    isBracketsOpen = true;
-//                    temp = "";
-//                }
-//                if (parts[i].equals(")")) {
-//                    isBracketsOpen = false;
-//                    tempArray.add(temp);
-//                }
-//            }
-//
-//            for (int i = 0; i < tempArray.size() ; i++) {
-//                System.out.println(tempArray.get(i));
-//            }
-//
-//    }
 
     public static String loadPlainText(String urlString) throws IOException {
         HTMLParser callback = new HTMLParser();
@@ -114,9 +57,8 @@ public class Test {
         InputStreamReader reader = new InputStreamReader(url.openStream());
         parser.parse(reader, callback, true); // call MyParserCallback to process the URL stream
 
-        return callback.content;
+        return callback.title;
     }
-
 
 
     public static void loadKeyWord(String urlString) throws IOException {

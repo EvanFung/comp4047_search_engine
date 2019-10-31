@@ -12,9 +12,15 @@ public class UrlQueue {
     //url pool
     private static Queue<String> urlPool = new PriorityQueue<>();
 
+    private static Set<String> deadpool = new HashSet<>();
 
     private UrlQueue() {
 
+    }
+
+    public static synchronized void addToDeadpool(final String url)
+    {
+        deadpool.add(url);
     }
 
     public static synchronized void addProcessedUrlPool(final String url) {
@@ -61,7 +67,7 @@ public class UrlQueue {
      */
     public static void addToUrlPool(final String url) {
 
-        if (!processedUrlPool.contains(url) && !urlPool.contains(url)) {
+        if (!processedUrlPool.contains(url) && !urlPool.contains(url) && !deadpool.contains(url)) {
             urlPool.add(url);
             System.out.println("now url pool has :" + UrlQueue.getUrlPoolSize() + " elements"); //
         }

@@ -1,5 +1,9 @@
 package hk.edu.hkbu.comp.search_engine.crawler;
+import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
+import hk.edu.hkbu.comp.search_engine.model.WordTable;
+import hk.edu.hkbu.comp.search_engine.model.Page;
 
+import javax.swing.text.html.parser.ParserDelegator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +18,8 @@ import java.util.regex.Pattern;
  *   pull data process flow
  * */
 public class Crawler {
+
+    WordTable wordTable;
     //maximum number of web pages that crawled
     final int Y = 100;
     final int X = 10;
@@ -21,16 +27,15 @@ public class Crawler {
             ".css", "adobe", "turnitin"};
 
     private UrlFilter urlFilter = new UrlFilter();
+
     private int x, y;
-
-
-
     private String seed;
 
     public Crawler() {
     }
 
-    public Crawler(String seed, int x, int y) throws IOException {
+    public Crawler(WordTable _wordTable, String seed, int x, int y) throws IOException {
+        wordTable = _wordTable;
         UrlQueue.addToUrlPool(seed);
         this.x = x;
         this.y = y;
@@ -38,7 +43,7 @@ public class Crawler {
 
 
     public void crawling() throws IOException {
-        while (UrlQueue.getProcessedUrlPoolSize() < y) {
+        while (UrlQueue.getProcessedUrlPoolSize() < y && UrlQueue.getUrlPoolSize() > 0) {
             //Retrieve and remove an URL from URL Pool
             String visitUrl = (String) UrlQueue.urlPoolDeQueue();
             //Transform to redirected url
@@ -54,14 +59,23 @@ public class Crawler {
             //TODO store the words, URL with its title, the number of word containing in the page.
             //get the corresponding web page.
 
-            List<String> links = getURLs(visitUrl);
+            ConnectionPack connectionPack = getConnectionPack(visitUrl);
+            Page page = getPage(connectionPack);
+
+            if(connectionPack == null || page == null)
+            {
+                UrlQueue.addToDeadpool(visitUrl);
+                System.out.println("Add to deadpool: " + visitUrl);
+                continue;
+            }
+
+            List<String> links = getURLs(connectionPack);
 
             for (String url : links) {
                 if (UrlQueue.getUrlPoolSize() < x ) {
                     UrlQueue.addToUrlPool(url);
                 }
             }
-
 
             UrlQueue.printUrlPool();
 
@@ -73,38 +87,63 @@ public class Crawler {
 
     }
 
+    public static Page getPage(ConnectionPack cP) throws IOException {
+        Page page = new Page();
+        try {
+            ParserDelegator parser = new ParserDelegator();
+            HTMLParser callback = new HTMLParser();
+            parser.parse(cP.getReader(), callback, true);
+            page.setTitle(callback.title);
+            page.setUrl(cP.getUrl().toString());
 
-    public List<String> getURLs(String srcPage) throws IOException {
-//        URL url = new URL(srcPage);
-//        InputStreamReader reader = new InputStreamReader(url.openStream());
-//        ParserDelegator parser = new ParserDelegator();
-//        HTMLParser callback = new HTMLParser();
-//        parser.parse(reader, callback, true);
-//
-//        for (int i = 0; i < callback.urls.size(); i++) {
-//            String str = callback.urls.get(i);
-//            if (!isAbsURL(str)) {
-//                callback.urls.set(i, toAbsURL(str, url).toString());
-//            }
-//        }
-//
-//        return callback.urls;
+            page.setWords(getUniqueWords(cP.getContentString()));
 
+            page.setWordCount(page.getWords().size());
+        }catch (Exception e) {
+//            e.printStackTrace();
+            return null;
+        }
+        return page;
+    }
+
+    public static ConnectionPack getConnectionPack(String srcPage) throws IOException
+    {
+        ConnectionPack cP = new ConnectionPack();
+        try{
+
+            cP.setUrl(new URL(srcPage));
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection) cP.getUrl().openConnection();
+            httpURLConnection.setInstanceFollowRedirects(false);
+
+            cP.setCode(httpURLConnection.getResponseCode());
+            //content of the html
+            String connect = loadWebConnect(srcPage);
+            if(connect == null) return null;
+            cP.setContentString(loadWebConnect(srcPage));
+            cP.setConnection(httpURLConnection);
+            cP.setReader(new InputStreamReader(httpURLConnection.getInputStream()));
+        }catch (Exception e) {
+//            e.printStackTrace();
+            return null;
+        }
+
+        return cP;
+    }
+
+    public List<String> getURLs(ConnectionPack cP) throws IOException {
 
         List<String> list = new ArrayList<>();
-        URL url = new URL(srcPage);
-        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-        httpURLConnection.setInstanceFollowRedirects(false);
-        int code = httpURLConnection.getResponseCode();
+
         // url regex
         Pattern pattern = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))", Pattern.DOTALL);
-        //content of the html
-        String webContent = loadWebConent(srcPage);
-        Matcher matcher = pattern.matcher(webContent);
+        Matcher matcher = pattern.matcher(cP.getContentString());
         //
-        if (code == 200) {
+        if (cP.getCode() == 200) {
             //if url is found, keep looping
             while (matcher.find()) {
+                //TODO: Filter place here
+
                 //remove the url double quote
                 String urlStr = matcher.group(1).replaceAll("\"|\'", "");
                 //if not contain # and not in the except list of url
@@ -113,7 +152,7 @@ public class Crawler {
                         list.add(urlStr);
                     } else {
                         String absoluteUrl = "";
-                        absoluteUrl =  url.getProtocol() + "://" + url.getHost() + urlStr;
+                        absoluteUrl = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + urlStr;
                         list.add(absoluteUrl);
                     }
                 }
@@ -122,9 +161,11 @@ public class Crawler {
 
         //if the visit url is redirected to another url.
         //such as "http://www.comp.hkbu.edu.hk/" to "http://www.comp.hkbu.edu.hk/v1/"
-        if(code == 302) {
-            url = toRedirectedUrl(url.toString());
+        if(cP.getCode() == 302) {
+            cP.setUrl(toRedirectedUrl(cP.getUrl().toString()));
             while (matcher.find()) {
+                //TODO: Filter place here
+
                 //remove the url double quote
                 String urlStr = matcher.group(1).replaceAll("\"|\'", "");
                 //if not contain # and not in the except list of url
@@ -134,10 +175,10 @@ public class Crawler {
                     } else {
                         String absoluteUrl = "";
                         // /v1/v1/ repeated problem
-                        if(urlStr.contains(url.getPath())) {
-                            absoluteUrl = url.getProtocol() + "://" + url.getHost() +  urlStr.replaceAll(url.getPath(), url.getPath());
+                        if(urlStr.contains(cP.getUrl().getPath())) {
+                            absoluteUrl = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() +  urlStr.replaceAll(cP.getUrl().getPath(), cP.getUrl().getPath());
                         } else {
-                            absoluteUrl =  url.getProtocol() + "://" + url.getHost() + url.getPath() + urlStr;
+                            absoluteUrl =  cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + cP.getUrl().getPath() + urlStr;
                         }
                         list.add(absoluteUrl);
                     }
@@ -157,7 +198,6 @@ public class Crawler {
         return false;
     }
 
-
     public URL toRedirectedUrl(String srcUrl) throws IOException {
         URLConnection con = new URL(srcUrl).openConnection();
         con.connect();
@@ -166,27 +206,11 @@ public class Crawler {
         return url;
     }
 
-
     public static boolean isAbsURL(String str) {
         return str.matches("^[a-z0-9]+://.+");
     }
 
-    public static URL toAbsURL(String str, URL ref) throws MalformedURLException {
-        URL url = null;
-        String prefix = ref.getProtocol() + "://" + ref.getHost() + ref.getPath();
-        if (prefix.endsWith("/")) {
-            prefix = prefix.substring(0, prefix.length() - 1);
-        }
-        if (ref.getPort() > -1)
-            prefix += ":" + ref.getPort();
-
-
-        url = new URL(prefix + str);
-        return url;
-    }
-
-
-    public static String loadWebConent(String urlStr) {
+    public static String loadWebConnect(String urlStr) {
         URL url;
         InputStream is = null;
         BufferedReader br;
@@ -202,16 +226,34 @@ public class Crawler {
             }
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
+            return null;
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            return null;
         } finally {
             try {
                 if (is != null) is.close();
             } catch (IOException ioe) {
                 // nothing to see here
+                return null;
             }
         }
 
         return result;
     }
+
+    public static List<String> getUniqueWords(String text) {
+        String[] words = text.split("[\\d\\W]+");
+        ArrayList<String> uniqueWords = new ArrayList<String>();
+
+        for (String w : words) {
+            w = w.toLowerCase();
+
+            if (!uniqueWords.contains(w))
+                uniqueWords.add(w);
+        }
+
+        return uniqueWords;
+    }
+
 }

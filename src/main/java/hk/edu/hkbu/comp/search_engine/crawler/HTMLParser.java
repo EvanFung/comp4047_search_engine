@@ -6,7 +6,6 @@ import javax.swing.text.html.HTMLEditorKit;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-
 public class HTMLParser extends HTMLEditorKit.ParserCallback {
     public ArrayList<String> urls = new ArrayList<String>();
     public String content = new String();
@@ -16,6 +15,7 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
     public boolean isScript = false;
     public boolean isStyle = false;
     public boolean isMeta = false;
+    public boolean isTitle = false;
     public boolean encounterMetaName = false;
 
     public void handleStartTag(HTML.Tag tag, MutableAttributeSet attrSet, int pos) {
@@ -35,6 +35,13 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
         } else {
             isMeta = false;
         }
+
+        if (tag == HTML.Tag.TITLE) {
+            isTitle = true;
+        } else {
+            isTitle = false;
+        }
+
         //get a tag
         if (tag.toString().equals("a")) {
             Enumeration e = attrSet.getAttributeNames();
@@ -55,13 +62,16 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
         if (isStyle) {
 //            doSomething(data);
         }
+        if(isTitle)
+        {
+            title = new String(data);
+        }
         content += new String(data) + " ";
     }
 
     public void doSomething(char[] data) {
         System.out.println(data);
     }
-
 
     @Override
     public void handleSimpleTag(HTML.Tag tag, MutableAttributeSet attrSet, int pos) {
