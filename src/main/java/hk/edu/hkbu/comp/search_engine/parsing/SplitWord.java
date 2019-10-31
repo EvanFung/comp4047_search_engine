@@ -1,5 +1,6 @@
 package hk.edu.hkbu.comp.search_engine.parsing;
 
+import hk.edu.hkbu.comp.search_engine.crawler.BlackListWordFilter;
 import hk.edu.hkbu.comp.search_engine.crawler.FilterTool;
 import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
 import hk.edu.hkbu.comp.search_engine.crawler.IgnoreWordFilter;
@@ -41,7 +42,6 @@ public class SplitWord {
 
         //6.make the file, the title of the file is name after the title of the page
 
-        FilterTool ignoreWordFilter = new IgnoreWordFilter();
         Iterator<String> it = processedUrlQueue.iterator();
         FileOutputStream fileOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
@@ -50,7 +50,7 @@ public class SplitWord {
             String title = HTMLParser.loadTitleText(url);
             String words = HTMLParser.loadBodyText(url);
             //get list of the words in the given url;
-            List<String> list = getUniqueWords(words);
+            ArrayList<String> list = getSplitWord(url);
 
             //filtering if ignore words in the content, remove it from the words list
 //            for (String word : list) {
@@ -98,16 +98,34 @@ public class SplitWord {
      * @return
      */
 
-    public static List<String> getSplitWord(String url) throws IOException {
+    public static ArrayList<String> getSplitWord(String url) throws IOException {
+        FilterTool blackListWordFilter = new BlackListWordFilter();
+        FilterTool ignoreWordFilter = new IgnoreWordFilter();
         String bodyText = HTMLParser.loadBodyText(url);
-        return getUniqueWords(bodyText);
+        ArrayList<String> bodyStr = getUniqueWords(bodyText);
+        //remove ignore words and blacklist of words
+//        for (String s : bodyStr) {
+//            if (!blackListWordFilter.accept(s) || !ignoreWordFilter.accept(s)) {
+//                bodyStr.remove(s);
+//            }
+//        }
+        // use for loop cause ConcurrentModificationException
+        // changes to Iterator
+        Iterator<String> iterator = bodyStr.iterator();
+        while (iterator.hasNext()) {
+            String word = iterator.next();
+            if(!blackListWordFilter.accept(word) || !ignoreWordFilter.accept(word)) {
+                iterator.remove();
+            }
+        }
+        return bodyStr;
     }
 
     /**
      * @param text body of the web page
      * @return list of the tokenized  String
      */
-    public static List<String> getUniqueWords(String text) {
+    public static ArrayList<String> getUniqueWords(String text) {
         String[] words = text.split("[\\d\\W]+");
         ArrayList<String> uniqueWords = new ArrayList<String>();
 
@@ -117,9 +135,6 @@ public class SplitWord {
             if (!uniqueWords.contains(w))
                 uniqueWords.add(w);
         }
-
-
-        
 
         return uniqueWords;
     }
