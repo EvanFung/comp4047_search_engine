@@ -11,11 +11,11 @@ public class Page {
     public Page() {
     }
 
-    public Page(String url, String title, List<String> words, int wordCount) {
+    public Page(String url, String title, List<String> words) {
         this.url = url;
         this.title = title;
         this.words = words;
-        this.wordCount = wordCount;
+        this.wordCount = words.size();
     }
 
     public List<String> getWords() {
@@ -53,4 +53,5 @@ public class Page {
     public void incrementWord() {
         wordCount++;
     }
+
 }

@@ -2,28 +2,49 @@ package hk.edu.hkbu.comp.search_engine;
 
 import hk.edu.hkbu.comp.search_engine.crawler.Crawler;
 import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
-import hk.edu.hkbu.comp.search_engine.model.MatchingTable;
-import hk.edu.hkbu.comp.search_engine.utils.SensitiveFilterService;
-import hk.edu.hkbu.comp.search_engine.utils.SensitiveType;
+import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
+import hk.edu.hkbu.comp.search_engine.model.Page;
+import hk.edu.hkbu.comp.search_engine.model.WordTable;
 
 import javax.swing.text.html.parser.ParserDelegator;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        MatchingTable matchingTable = new MatchingTable();
-        Crawler crawler = new Crawler(matchingTable, "https://2cat.komica.org/~tedc21thc/anime/ ", 10,20);
-        crawler.crawling();
+        WordTable wordTable = new WordTable();
+         String sb =  Crawler.loadWebConnect("https://www.bbc.co.uk/news");
 
-//    String s =     loadPlainText("https://matthung0807.blogspot.com/2019/01/java-serializedeserialize.html");
+        List<String> s = Crawler.getUniqueWords(sb);
+
+//        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");
+//        Page page = Crawler.getPage(connectionPack);
+//
+        int i = 0;
+        for (String word:s)
+        {
+            System.out.print(word + " ");
+            if (++i % 20 == 0) System.out.println();
+        }
+
+
+
+//        wordTable.addPageToWord("apple", new Page("https://www.google.com/search?q=apple",  "Apple",  new ArrayList<>()));
+//        wordTable.addPageToWord("banana", new Page("https://www.google.com/search?q=banana",  "Apple",  new ArrayList<>()));
+//        wordTable.addPageToWord("apple", new Page("https://www.apple.com/hk/",  "100",  new ArrayList<>()));
+//        wordTable.addPageToWord("apple", new Page("https://hk.appledaily.com",  "good",  new ArrayList<>()));
+//        wordTable.printAll();
+
+
+//        Crawler crawler = new Crawler(wordTable, "https://2cat.komica.org/~tedc21thc/anime/ ", 10,20);
+//        crawler.crawling();
+//
+//        String s = loadPlainText("https://matthung0807.blogspot.com/2019/01/java-serializedeserialize.html");
 //        System.out.println(s);
-
+//
 //        crawler.setPage(crawler.getConnectionPack("https://matthung0807.blogspot.com/2019/01/java-serializedeserialize.html"));
     }
 
@@ -48,7 +69,6 @@ public class Test {
         parser.parse(reader, callback, true);
         System.out.println(callback.keywordContent);
     }
-
 
 
 }

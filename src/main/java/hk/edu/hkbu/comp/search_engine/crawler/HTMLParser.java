@@ -6,7 +6,6 @@ import javax.swing.text.html.HTMLEditorKit;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-
 public class HTMLParser extends HTMLEditorKit.ParserCallback {
     public ArrayList<String> urls = new ArrayList<String>();
     public String content = new String();
@@ -73,7 +72,6 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
     public void doSomething(char[] data) {
         System.out.println(data);
     }
-
 
     @Override
     public void handleSimpleTag(HTML.Tag tag, MutableAttributeSet attrSet, int pos) {

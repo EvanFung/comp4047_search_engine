@@ -1,6 +1,6 @@
 package hk.edu.hkbu.comp.search_engine.crawler;
 import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
-import hk.edu.hkbu.comp.search_engine.model.MatchingTable;
+import hk.edu.hkbu.comp.search_engine.model.WordTable;
 import hk.edu.hkbu.comp.search_engine.model.Page;
 
 import javax.swing.text.html.parser.ParserDelegator;
@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * */
 public class Crawler {
 
-    MatchingTable matchingTable;
+    WordTable wordTable;
     //maximum number of web pages that crawled
     final int Y = 100;
     final int X = 10;
@@ -34,8 +34,8 @@ public class Crawler {
     public Crawler() {
     }
 
-    public Crawler(MatchingTable _matchingTable, String seed, int x, int y) throws IOException {
-        matchingTable = _matchingTable;
+    public Crawler(WordTable _wordTable, String seed, int x, int y) throws IOException {
+        wordTable = _wordTable;
         UrlQueue.addToUrlPool(seed);
         this.x = x;
         this.y = y;
@@ -87,7 +87,7 @@ public class Crawler {
 
     }
 
-    public Page getPage(ConnectionPack cP) throws IOException {
+    public static Page getPage(ConnectionPack cP) throws IOException {
         Page page = new Page();
         try {
             ParserDelegator parser = new ParserDelegator();
@@ -106,7 +106,7 @@ public class Crawler {
         return page;
     }
 
-    public ConnectionPack getConnectionPack(String srcPage) throws IOException
+    public static ConnectionPack getConnectionPack(String srcPage) throws IOException
     {
         ConnectionPack cP = new ConnectionPack();
         try{
