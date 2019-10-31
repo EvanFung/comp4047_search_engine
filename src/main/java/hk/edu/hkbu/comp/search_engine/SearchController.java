@@ -22,12 +22,14 @@ public class SearchController {
     @PostMapping("/")
     public String greetingSubmit(@ModelAttribute Query query) {
         System.out.println(query.getQueryWord());
+        System.out.println("123");
+        System.out.println(getSearchEquation(query.getQueryWord()));
         return "index";//view
     }
 
-    public static String getSearchEquation() {
+    public static String getSearchEquation(String test) {
         //String test = "APPLE AnD ORANGE Pear";
-        String test = "Apple NOT ( Pear OR Corn ) AND ASD SAD NOT (pear and os)";
+//        String test = "Apple NOT ( Pear OR Corn ) AND ASD SAD NOT (pear and os)";
 
         test = test.toUpperCase();
         String[] parts = test.split(" ");
