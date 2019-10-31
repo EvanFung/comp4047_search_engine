@@ -21,21 +21,16 @@ public class SearchController {
 
     @PostMapping("/")
     public String greetingSubmit(@ModelAttribute Query query) {
-        System.out.println(query.getQueryWord());
-        System.out.println("123");
-        System.out.println(getSearchEquation(query.getQueryWord()));
+        query.setQueryWord(getSearchEquation(query.getQueryWord()));
         return "index";//view
     }
 
-    public static String getSearchEquation() {
+    public static String getSearchEquation(String test) {
         //String test = "APPLE AnD ORANGE Pear";
-        String test = "Apple NOT ( Pear OR Corn ) AND ASD SAD NOT (pear and os)";
+//        test = "Apple NOT ( Pear OR Corn ) AND ASD SAD NOT (pear and os)";
 
         test = test.toUpperCase();
         String[] parts = test.split(" ");
-//            System.out.println(parts[0]);
-//            System.out.println(parts[1]);
-//            System.out.println(parts[2]);
         boolean nextEqualsKeywords = true;
         String SearchEquation = "";
         for (int i = 0; i < parts.length; i++) {
@@ -78,7 +73,6 @@ public class SearchController {
 
             }
         }
-        //System.out.println(SearchEquation);
         return  SearchEquation;
     }
 

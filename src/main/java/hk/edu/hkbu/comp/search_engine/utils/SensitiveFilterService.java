@@ -47,11 +47,11 @@ public class SensitiveFilterService {
             // 判断是否包含敏感字符
             int length = CheckSensitiveWord(txt, i, matchType);
 
-// 存在,加入list中
+        // 存在,加入list中
             if (length > 0) {
                 sensitiveWordList.add(txt.substring(i, i + length));
 
-// 减1的原因，是因为for会自增
+        // 减1的原因，是因为for会自增
                 i = i + length - 1;
             }
         }

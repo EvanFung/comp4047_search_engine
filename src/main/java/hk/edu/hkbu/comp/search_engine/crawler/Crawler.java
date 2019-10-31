@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +43,7 @@ public class Crawler {
     }
 
 
-    public void crawling() throws IOException {
+    public Set<String> crawling() throws IOException {
         while (UrlQueue.getProcessedUrlPoolSize() < y && UrlQueue.getUrlPoolSize() > 0) {
             //Retrieve and remove an URL from URL Pool
             String visitUrl = (String) UrlQueue.urlPoolDeQueue();
@@ -85,6 +86,7 @@ public class Crawler {
         //print the processedUrl pool
         UrlQueue.printProcessedUrlPool();
 
+        return UrlQueue.getProcessedUrlPool();
     }
 
     public static Page getPage(ConnectionPack cP) throws IOException {

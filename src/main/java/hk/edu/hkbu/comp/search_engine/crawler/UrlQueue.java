@@ -33,6 +33,19 @@ public class UrlQueue {
         processedUrlPool.remove(url);
     }
 
+
+    public static Set<String> getProcessedUrlPool() {
+        return processedUrlPool;
+    }
+
+    public static void setProcessedUrlPool(Set<String> processedUrlPool) {
+        UrlQueue.processedUrlPool = processedUrlPool;
+    }
+
+    public static void setUrlPool(Queue<String> urlPool) {
+        UrlQueue.urlPool = urlPool;
+    }
+
     /**
      * get the number that has been visited.
      *
