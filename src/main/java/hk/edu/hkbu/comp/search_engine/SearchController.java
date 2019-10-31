@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 
 @Controller
-public class GreetingController {
+public class SearchController {
 
     @GetMapping("/")
     public String greeting(String name, Model model) {
@@ -21,7 +21,6 @@ public class GreetingController {
 
     @PostMapping("/")
     public String greetingSubmit(@ModelAttribute Greeting greeting) {
-        System.out.println(greeting.getSearch());
         return "index";
     }
 
