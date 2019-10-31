@@ -5,6 +5,7 @@ import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
 import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
 import hk.edu.hkbu.comp.search_engine.model.Page;
 import hk.edu.hkbu.comp.search_engine.model.WordTable;
+import hk.edu.hkbu.comp.search_engine.utils.Utils;
 
 import javax.swing.text.html.parser.ParserDelegator;
 import java.io.IOException;
@@ -16,20 +17,20 @@ import java.util.List;
 public class Test {
     public static void main(String[] args) throws Exception {
         WordTable wordTable = new WordTable();
-         String sb =  Crawler.loadWebConnect("https://www.bbc.co.uk/news");
-
-        List<String> s = Crawler.getUniqueWords(sb);
+        String sb = loadBodyText("https://www.bbc.com/news/world-us-canada-50246324");
+        List<String> list = Utils.getUniqueWords(sb);
+        for(String s : list) {
+            System.out.println(s);
+        }
+//        List<String> s = Crawler.getUniqueWords(Utils.toUsefulText(sb));
 
 //        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");
 //        Page page = Crawler.getPage(connectionPack);
 //
-        int i = 0;
-        for (String word:s)
-        {
-            System.out.print(word + " ");
-            if (++i % 20 == 0) System.out.println();
-        }
-
+//        for (String word:s)
+//        {
+//            System.out.println(word + " ");
+//        }
 
 
 //        wordTable.addPageToWord("apple", new Page("https://www.google.com/search?q=apple",  "Apple",  new ArrayList<>()));
@@ -58,6 +59,18 @@ public class Test {
         parser.parse(reader, callback, true); // call MyParserCallback to process the URL stream
 
         return callback.title;
+    }
+
+
+    public static String loadBodyText(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        InputStreamReader reader = new InputStreamReader(url.openStream());
+
+        ParserDelegator parser = new ParserDelegator();
+        HTMLParser callback = new HTMLParser();
+        parser.parse(reader, callback, true);
+
+        return callback.bodyContent;
     }
 
 

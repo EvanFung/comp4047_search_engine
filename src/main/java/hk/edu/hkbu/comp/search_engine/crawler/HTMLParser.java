@@ -10,15 +10,20 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
     public ArrayList<String> urls = new ArrayList<String>();
     public String content = new String();
     public String keywordContent = new String();
+    public String bodyContent = null;
     //title of the page
     public String title = new String();
     public boolean isScript = false;
     public boolean isStyle = false;
     public boolean isMeta = false;
     public boolean isTitle = false;
+    public static boolean isBody = false;
     public boolean encounterMetaName = false;
 
     public void handleStartTag(HTML.Tag tag, MutableAttributeSet attrSet, int pos) {
+        if (tag.equals(HTML.Tag.BODY)) {
+            isBody = true;
+        }
         if (tag == HTML.Tag.SCRIPT) {
             isScript = true;
         } else {
@@ -62,15 +67,21 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
         if (isStyle) {
 //            doSomething(data);
         }
-        if(isTitle)
-        {
+        if (isTitle) {
             title = new String(data);
+        }
+        if(isBody) {
+            bodyContent += new String(data) + " ";
         }
         content += new String(data) + " ";
     }
 
-    public void doSomething(char[] data) {
-        System.out.println(data);
+
+    @Override
+    public void handleEndTag(HTML.Tag t, int pos) {
+        if(t.equals(HTML.Tag.BODY)) {
+            isBody = false;
+        }
     }
 
     @Override
