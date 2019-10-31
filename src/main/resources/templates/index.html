@@ -11,8 +11,8 @@
 <main class="container">
     <div class="row">
      <div class="col-12">
-         <form class="form-inline md-form form-sm mt-0" th:action="@{/}" th:object="${greeting}" method="POST" action="#">
-             <input class="form-control form-control-sm" type="text" placeholder="Search" th:field="*{search}"
+         <form class="form-inline md-form form-sm mt-0" th:action="@{/}" th:object="${query}" method="POST" action="#">
+             <input class="form-control form-control-sm" type="text" placeholder="Search" th:field="*{queryWord}"
                     aria-label="Search">
              <button type="submit" class="btn">Search <i class="fa fa-search"></i></button>
          </form>
@@ -25,6 +25,7 @@
         <div class="col-12">
             <div class="row body-title">
                 <div class="col-12">
+                    <h3 th:if="${query.getQueryWord() != null}" th:text="${query.getQueryWord()}"></h3>
                     <a href="#"><h3>title of the search result</h3></a>
                     <cite>url of the page</cite>
                 </div>

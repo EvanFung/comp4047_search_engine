@@ -1,5 +1,6 @@
 package hk.edu.hkbu.comp.search_engine;
 import hk.edu.hkbu.comp.search_engine.model.Greeting;
+import hk.edu.hkbu.comp.search_engine.model.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,14 +15,14 @@ public class SearchController {
 
     @GetMapping("/")
     public String greeting(String name, Model model) {
-        model.addAttribute("name", name);
-        model.addAttribute("greeting", new Greeting());
+        model.addAttribute("query", new Query());
         return "index";//view
     }
 
     @PostMapping("/")
-    public String greetingSubmit(@ModelAttribute Greeting greeting) {
-        return "index";
+    public String greetingSubmit(@ModelAttribute Query query) {
+        System.out.println(query.getQueryWord());
+        return "index";//view
     }
 
     public static String getSearchEquation() {
