@@ -21,7 +21,7 @@ public class SearchController {
 
     @PostMapping("/")
     public String greetingSubmit(@ModelAttribute Query query) {
-        System.out.println(query.getQueryWord());
+        System.out.println(getSearchEquation());
         return "index";//view
     }
 
