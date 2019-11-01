@@ -9,34 +9,34 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class Page implements Serializable {
     private String url;
     private String title;
-    private List<String> originalWords;
+    private String originalContent;
     private String hash;
 
     private int wordCount;
 
-    public Page() {
+    public Page() {}
 
-    }
-
-    public Page(String url, String title, List<String> originalWords) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Page(String url, String title, String originalContent) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         this.url = url;
         this.title = title;
-        this.originalWords = originalWords;
-        this.wordCount = originalWords.size();
+        this.originalContent = originalContent;
+        this.wordCount = new StringTokenizer(originalContent).countTokens();
         this.hash = Utils.getSHA256(this.url);
     }
 
-    public List<String> getOriginalWords() {
-        return originalWords;
+    public String getOriginalContent() {
+        return originalContent;
     }
 
-    public void setOriginalWords(List<String> originalWords) {
-        this.originalWords = originalWords;
+    public void setOriginalContent(String originalContent) {
+        this.originalContent = originalContent;
     }
 
     public String getUrl() {
@@ -73,5 +73,26 @@ public class Page implements Serializable {
 
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    public boolean setPage(ConnectionPack cP) throws IOException {
+        try {
+            ParserDelegator parser = new ParserDelegator();
+            HTMLParser callback = new HTMLParser();
+            parser.parse(cP.getReader(), callback, true);
+
+            setTitle(callback.title);
+            setUrl(cP.getUrl().toString());
+
+            String bodyText = HTMLParser.loadBodyText(cP.getContentString());
+
+            setOriginalContent(bodyText);
+            setWordCount(getOriginalContent().length());
+            setHash(Utils.getSHA256(getUrl()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

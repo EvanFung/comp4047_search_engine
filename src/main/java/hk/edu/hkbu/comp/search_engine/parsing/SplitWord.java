@@ -5,31 +5,14 @@ import hk.edu.hkbu.comp.search_engine.crawler.FilterTool;
 import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
 import hk.edu.hkbu.comp.search_engine.crawler.IgnoreWordFilter;
 import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
-import hk.edu.hkbu.comp.search_engine.model.Page;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import static hk.edu.hkbu.comp.search_engine.crawler.HTMLParser.loadBodyText;
+import java.util.*;
 
 public class SplitWord {
-    private Set<String> processedUrlQueue;
-    private String wordDir;
 
     public SplitWord() {
     }
-
-    public SplitWord(Set<String> processedUrlQueue, String wordDir) {
-        this.processedUrlQueue = processedUrlQueue;
-        this.wordDir = wordDir;
-    }
-
-
 //    public void split() throws IOException {
 //        //1.get the title of the web page
 //
@@ -85,58 +68,24 @@ public class SplitWord {
 //
 //    }
 
-    public final String getFileNameByTitle(final String title) {
-        String result = new String();
-        //remove all whitespace from String
-        result = title.replaceAll("\\\\s+", "");
-        //if there is a special character, replace it to _.
-        result = result.replaceAll("[\\?/:*|<>\"]", "_");
-        return result;
-    }
+//    public final String getFileNameByTitle(final String title) {
+//        String result = new String();
+//        //remove all whitespace from String
+//        result = title.replaceAll("\\\\s+", "");
+//        //if there is a special character, replace it to _.
+//        result = result.replaceAll("[\\?/:*|<>\"]", "_");
+//        return result;
+//    }
 
-    /**
-     * @param url to be split word
-     * @return
-     */
-
-    public static ArrayList<String> getSplitWord(String url) throws IOException {
-        FilterTool blackListWordFilter = new BlackListWordFilter();
-        FilterTool ignoreWordFilter = new IgnoreWordFilter();
-        String bodyText = HTMLParser.loadBodyText(url);
-        ArrayList<String> bodyStr = getUniqueWords(bodyText);
-        //remove ignore words and blacklist of words
-//        for (String s : bodyStr) {
-//            if (!blackListWordFilter.accept(s) || !ignoreWordFilter.accept(s)) {
-//                bodyStr.remove(s);
-//            }
-//        }
-        // use for loop cause ConcurrentModificationException
-        // changes to Iterator
-        Iterator<String> iterator = bodyStr.iterator();
-        while (iterator.hasNext()) {
-            String word = iterator.next();
-            if(!blackListWordFilter.accept(word) || !ignoreWordFilter.accept(word)) {
-                iterator.remove();
-            }
-        }
-        return bodyStr;
-    }
-
-    /**
-     * @param text body of the web page
-     * @return list of the tokenized  String
-     */
-    public static ArrayList<String> getUniqueWords(String text) {
+    public static ArrayList<String> splitToUniqueWords(String text) {
         String[] words = text.split("[\\d\\W]+");
-        ArrayList<String> uniqueWords = new ArrayList<String>();
+        Set<String> uniqueWords = new HashSet<>();
 
         for (String w : words) {
             w = w.toLowerCase();
-
-            if (!uniqueWords.contains(w))
-                uniqueWords.add(w);
+            uniqueWords.add(w);
         }
-
-        return uniqueWords;
+        return new ArrayList<String>(uniqueWords);
     }
+
 }

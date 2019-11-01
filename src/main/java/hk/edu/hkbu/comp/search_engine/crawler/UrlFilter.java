@@ -27,8 +27,8 @@ public class UrlFilter extends FilterTool {
                 //if case : http://www.weibo.com/*, we only check whether the host is same
                 if(s.contains("*")) {
                     //remove the * , get the validated url object
-                   String newURL =  s.replaceAll("\\*","");
-                   String evaluatedURLStr = evaluatedUrl.getProtocol() + "://" + evaluatedUrl.getHost() + evaluatedUrl.getFile();
+                    String newURL =  s.replaceAll("\\*","");
+                    String evaluatedURLStr = evaluatedUrl.getProtocol() + "://" + evaluatedUrl.getHost() + evaluatedUrl.getFile();
                     URL blackList = new URL(newURL);
                     newURL = blackList.getProtocol() + "://" + blackList.getHost() + blackList.getFile();
                     // http://www.sci.hkbu.edu.hk/eng/about-us/deans-message/ to http://www.sci.hkbu.edu.hk/eng/about-us/deans-message

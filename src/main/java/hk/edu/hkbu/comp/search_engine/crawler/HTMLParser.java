@@ -1,11 +1,12 @@
 package hk.edu.hkbu.comp.search_engine.crawler;
 
+import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
+
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -102,31 +103,20 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
     }
 
 
-    public static String loadBodyText(String urlString) throws IOException {
-        URL url = new URL(urlString);
-        InputStreamReader reader = new InputStreamReader(url.openStream());
+    public static String loadBodyText(String contentString) throws IOException {
 
         ParserDelegator parser = new ParserDelegator();
         HTMLParser callback = new HTMLParser();
-        parser.parse(reader, callback, true);
+        parser.parse(new StringReader(contentString), callback, true);
 
         return callback.bodyContent;
     }
 
+    public static String loadTitleText(String contentString) throws IOException {
 
-    /**
-     *
-     * @param urlString url of the web page
-     * @return title of the web page
-     * @throws IOException
-     */
-    public static String loadTitleText(String urlString) throws IOException {
-        HTMLParser callback = new HTMLParser();
         ParserDelegator parser = new ParserDelegator();
-
-        URL url = new URL(urlString);
-        InputStreamReader reader = new InputStreamReader(url.openStream());
-        parser.parse(reader, callback, true); // call MyParserCallback to process the URL stream
+        HTMLParser callback = new HTMLParser();
+        parser.parse(new StringReader(contentString), callback, true); // call MyParserCallback to process the URL stream
 
         return callback.title;
     }

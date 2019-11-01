@@ -1,7 +1,10 @@
 package hk.edu.hkbu.comp.search_engine.model;
 
+import hk.edu.hkbu.comp.search_engine.crawler.Crawler;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -46,5 +49,27 @@ public class ConnectionPack
 
     public void setConnection(URLConnection connection) {
         this.connection = connection;
+    }
+
+    public boolean setConnectionPack(String srcPage) throws IOException {
+        try {
+
+            setUrl(new URL(srcPage));
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection) getUrl().openConnection();
+            httpURLConnection.setInstanceFollowRedirects(false);
+
+            setCode(httpURLConnection.getResponseCode());
+            //content of the html
+            String content = Crawler.loadWebContent(srcPage);
+            if (content == null) return false;
+            setContentString(content);
+            setConnection(httpURLConnection);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 }

@@ -7,10 +7,7 @@ import hk.edu.hkbu.comp.search_engine.parsing.SplitWord;
 import hk.edu.hkbu.comp.search_engine.utils.Utils;
 
 import javax.swing.text.html.parser.ParserDelegator;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +40,6 @@ public class Crawler {
         this.y = y;
     }
 
-
     public Set<String> crawling() throws IOException {
         UrlFilter urlFilter = new UrlFilter();
         while (UrlQueue.getProcessedUrlPoolSize() < y && UrlQueue.getUrlPoolSize() > 0) {
@@ -53,30 +49,28 @@ public class Crawler {
 //            URL urlVisit = toRedirectedUrl(visitUrl);
 //            visitUrl = urlVisit.toString();
 
-            //TODO extract all words from this web pages. if not listed in the given blacklist and ignore list
-            //Extract all words from this web page.
-            //For each word, if it is not listed in the given blacklist and ignore list, store the following items:
-            // i) the word,
-            // ii) URL with its title, and
-            // iii) number of the word containing in the page.
+            ConnectionPack connectionPack = new ConnectionPack();
+            Page page = new Page();
 
-            ConnectionPack connectionPack = getConnectionPack(visitUrl);
-            Page page = getPage(connectionPack);
-            if (connectionPack == null || page == null) {
+            if (!connectionPack.setConnectionPack(visitUrl) || !page.setPage(connectionPack))
+            {
                 UrlQueue.addToDeadpool(visitUrl);
                 System.out.println("Add to deadpool: " + visitUrl);
                 continue;
             }
 
+            ArrayList<String> UniqueWords = SplitWord.splitToUniqueWords(page.getOriginalContent());
+            ArrayList<String> filteredWords = FilterTool.filterWords(UniqueWords);
 
+            wordTable.addPageToWords(filteredWords, page);
 
-            //TODO store the words, URL with its title, the number of word containing in the page.
-            //get the corresponding web page.
+            recordPage(page);
 
             List<String> links = getURLs(connectionPack);
 
             for (String url : links) {
-                if (UrlQueue.getUrlPoolSize() < x && urlFilter.accept(url)) {
+                if (UrlQueue.getUrlPoolSize() < x && urlFilter.accept(url) && !url.equals(visitUrl))
+                {
                     UrlQueue.addToUrlPool(url);
                 }
             }
@@ -90,49 +84,6 @@ public class Crawler {
         UrlQueue.printProcessedUrlPool();
 
         return UrlQueue.getProcessedUrlPool();
-    }
-
-    public static Page getPage(ConnectionPack cP) throws IOException {
-        Page page = new Page();
-        try {
-            ParserDelegator parser = new ParserDelegator();
-            HTMLParser callback = new HTMLParser();
-            parser.parse(cP.getReader(), callback, true);
-
-            page.setTitle(callback.title);
-            page.setUrl(cP.getUrl().toString());
-
-            page.setOriginalWords(SplitWord.getSplitWord(cP.getUrl().toString()));
-            page.setWordCount(page.getOriginalWords().size());
-            page.setHash(Utils.getSHA256(page.getUrl()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return page;
-    }
-
-    public static ConnectionPack getConnectionPack(String srcPage) throws IOException {
-        ConnectionPack cP = new ConnectionPack();
-        try {
-
-            cP.setUrl(new URL(srcPage));
-
-            HttpURLConnection httpURLConnection = (HttpURLConnection) cP.getUrl().openConnection();
-            httpURLConnection.setInstanceFollowRedirects(false);
-
-            cP.setCode(httpURLConnection.getResponseCode());
-            //content of the html
-            String content = loadWebContent(srcPage);
-            if (content == null) return null;
-            cP.setContentString(loadWebContent(srcPage));
-            cP.setConnection(httpURLConnection);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return cP;
     }
 
     public List<String> getURLs(ConnectionPack cP) throws IOException {
@@ -244,6 +195,15 @@ public class Crawler {
         }
 
         return result;
+    }
+
+    public static void recordPage(Page page) throws IOException {
+        FileOutputStream fileOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
+
+        fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/Pages/" + page.getHash()+ ".ser");
+        objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeObject(page);
     }
 
 }
