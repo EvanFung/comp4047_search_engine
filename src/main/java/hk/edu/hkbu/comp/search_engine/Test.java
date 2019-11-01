@@ -21,45 +21,48 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        WordTable wordTable = new WordTable();
-        //String sb =  Crawler.loadWebConnect("https://www.bbc.co.uk/news");
 
-        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");
-        Page page = Crawler.getPage(connectionPack);
-        if (connectionPack == null || page == null) {
-            UrlQueue.addToDeadpool("https://www.bbc.co.uk/news");
-            System.out.println("Add to deadpool: " + "https://www.bbc.co.uk/news");
-            return;
-        }
-        {
-            FileOutputStream fileOutputStream = null;
-            ObjectOutputStream objectOutputStream = null;
+        System.out.println(Utils.getSHA256("https://www.bbc.co.uk/news"));
 
-            wordTable.addPageToWord("apple", page);
-
-            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/wordTable.ser");
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(wordTable);
-        }
-        {
-            FileOutputStream fileOutputStream = null;
-            ObjectOutputStream objectOutputStream = null;
-
-            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/Pages/" + page.getTitle()+ ".ser");
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(page);
-        }
+//        WordTable wordTable = new WordTable();
+//        //String sb =  Crawler.loadWebConnect("https://www.bbc.co.uk/news");
+//
+//        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");
+//        Page page = Crawler.getPage(connectionPack);
+//        if (connectionPack == null || page == null) {
+//            UrlQueue.addToDeadpool("https://www.bbc.co.uk/news");
+//            System.out.println("Add to deadpool: " + "https://www.bbc.co.uk/news");
+//            return;
+//        }
+//        {
+//            FileOutputStream fileOutputStream = null;
+//            ObjectOutputStream objectOutputStream = null;
+//
+//            wordTable.addPageToWord("apple", page);
+//
+//            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/wordTable.ser");
+//            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//            objectOutputStream.writeObject(wordTable);
+//        }
+//        {
+//            FileOutputStream fileOutputStream = null;
+//            ObjectOutputStream objectOutputStream = null;
+//
+//            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/Pages/" + page.getTitle()+ ".ser");
+//            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//            objectOutputStream.writeObject(page);
+//        }
 
 
 //        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");
 //        Page page = Crawler.getPage(connectionPack);
 //
-        int i = 0;
-        for (String word:page.getOriginalWords())
-        {
-            System.out.print(word + " ");
-            if (++i % 20 == 0) System.out.println();
-        }
+//        int i = 0;
+//        for (String word:page.getOriginalWords())
+//        {
+//            System.out.print(word + " ");
+//            if (++i % 20 == 0) System.out.println();
+//        }
 
 
 

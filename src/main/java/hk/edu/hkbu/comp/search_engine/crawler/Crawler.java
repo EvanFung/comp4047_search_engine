@@ -4,6 +4,7 @@ import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
 import hk.edu.hkbu.comp.search_engine.model.WordTable;
 import hk.edu.hkbu.comp.search_engine.model.Page;
 import hk.edu.hkbu.comp.search_engine.parsing.SplitWord;
+import hk.edu.hkbu.comp.search_engine.utils.Utils;
 
 import javax.swing.text.html.parser.ParserDelegator;
 import java.io.BufferedReader;
@@ -103,6 +104,7 @@ public class Crawler {
 
             page.setOriginalWords(SplitWord.getSplitWord(cP.getUrl().toString()));
             page.setWordCount(page.getOriginalWords().size());
+            page.setHash(Utils.getSHA256(page.getUrl()));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
