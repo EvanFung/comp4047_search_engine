@@ -1,6 +1,7 @@
 package hk.edu.hkbu.comp.search_engine;
 import hk.edu.hkbu.comp.search_engine.model.Greeting;
 import hk.edu.hkbu.comp.search_engine.model.Query;
+import hk.edu.hkbu.comp.search_engine.model.WordTable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 @Controller
@@ -22,9 +26,40 @@ public class SearchController {
     @PostMapping("/")
     public String greetingSubmit(@ModelAttribute Query query) {
         query.setQueryWord(getSearchEquation(query.getQueryWord()));
+        deSer();
         return "index";//view
     }
 
+    public static void deSer() {
+        // Deserialization
+        WordTable workTable_object = new WordTable();
+        try
+        {
+            // Reading the object from a file
+            FileInputStream file = new FileInputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/wordTable.ser");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            // Method for deserialization of object
+            workTable_object = (WordTable)in.readObject();
+
+            in.close();
+            file.close();
+
+            System.out.println("Object has been deserialized ");
+            workTable_object.printWords();
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("IOException is caught");
+        }
+
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+        }
+
+    }
     public static String getSearchEquation(String test) {
         //String test = "APPLE AnD ORANGE Pear";
 //        test = "Apple NOT ( Pear OR Corn ) AND ASD SAD NOT (pear and os)";
