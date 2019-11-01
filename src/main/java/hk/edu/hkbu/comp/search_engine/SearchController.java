@@ -19,13 +19,13 @@ public class SearchController {
         return "index";//view
     }
 
-    @PostMapping("/")
-    public String greetingSubmit(@ModelAttribute Query query) {
-        System.out.println(query.getQueryWord());
-        System.out.println("123");
-        System.out.println(getSearchEquation(query.getQueryWord()));
-        return "index";//view
-    }
+//    @PostMapping("/")
+//    public String greetingSubmit(@ModelAttribute Query query) {
+//        System.out.println(query.getQueryWord());
+//        System.out.println("123");
+//        System.out.println(getSearchEquation(query.getQueryWord()));
+//        return "index";//view
+//    }
 
     public static String getSearchEquation() {
         //String test = "APPLE AnD ORANGE Pear";

@@ -5,6 +5,7 @@ import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
 import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
 import hk.edu.hkbu.comp.search_engine.model.Page;
 import hk.edu.hkbu.comp.search_engine.model.WordTable;
+import hk.edu.hkbu.comp.search_engine.utils.Utils;
 
 import javax.swing.text.html.parser.ParserDelegator;
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class Test {
         WordTable wordTable = new WordTable();
          String sb =  Crawler.loadWebConnect("https://www.bbc.co.uk/news");
 
-        List<String> s = Crawler.getUniqueWords(sb);
+        List<String> s = Crawler.getUniqueWords(Utils.toUsefulText(sb));
 
 //        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");
 //        Page page = Crawler.getPage(connectionPack);
