@@ -1,4 +1,5 @@
 package hk.edu.hkbu.comp.search_engine.crawler;
+
 import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
 import hk.edu.hkbu.comp.search_engine.model.WordTable;
 import hk.edu.hkbu.comp.search_engine.model.Page;
@@ -11,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,8 +28,6 @@ public class Crawler {
     final String[] URLException = {".pdf", "..", ".gif", ".png", ".jpg", ".ico", "javascript", "mailto",
             ".css", "adobe", "turnitin"};
 
-    private UrlFilter urlFilter = new UrlFilter();
-
     private int x, y;
     private String seed;
 
@@ -42,7 +42,8 @@ public class Crawler {
     }
 
 
-    public void crawling() throws IOException {
+    public Set<String> crawling() throws IOException {
+        UrlFilter urlFilter = new UrlFilter();
         while (UrlQueue.getProcessedUrlPoolSize() < y && UrlQueue.getUrlPoolSize() > 0) {
             //Retrieve and remove an URL from URL Pool
             String visitUrl = (String) UrlQueue.urlPoolDeQueue();
@@ -62,8 +63,7 @@ public class Crawler {
             ConnectionPack connectionPack = getConnectionPack(visitUrl);
             Page page = getPage(connectionPack);
 
-            if(connectionPack == null || page == null)
-            {
+            if (connectionPack == null || page == null) {
                 UrlQueue.addToDeadpool(visitUrl);
                 System.out.println("Add to deadpool: " + visitUrl);
                 continue;
@@ -72,7 +72,7 @@ public class Crawler {
             List<String> links = getURLs(connectionPack);
 
             for (String url : links) {
-                if (UrlQueue.getUrlPoolSize() < x ) {
+                if (UrlQueue.getUrlPoolSize() < x && urlFilter.accept(url)) {
                     UrlQueue.addToUrlPool(url);
                 }
             }
@@ -85,6 +85,7 @@ public class Crawler {
         //print the processedUrl pool
         UrlQueue.printProcessedUrlPool();
 
+        return UrlQueue.getProcessedUrlPool();
     }
 
     public static Page getPage(ConnectionPack cP) throws IOException {
@@ -99,17 +100,16 @@ public class Crawler {
             page.setWords(getUniqueWords(cP.getContentString()));
 
             page.setWordCount(page.getWords().size());
-        }catch (Exception e) {
+        } catch (Exception e) {
 //            e.printStackTrace();
             return null;
         }
         return page;
     }
 
-    public static ConnectionPack getConnectionPack(String srcPage) throws IOException
-    {
+    public static ConnectionPack getConnectionPack(String srcPage) throws IOException {
         ConnectionPack cP = new ConnectionPack();
-        try{
+        try {
 
             cP.setUrl(new URL(srcPage));
 
@@ -119,11 +119,11 @@ public class Crawler {
             cP.setCode(httpURLConnection.getResponseCode());
             //content of the html
             String connect = loadWebConnect(srcPage);
-            if(connect == null) return null;
+            if (connect == null) return null;
             cP.setContentString(loadWebConnect(srcPage));
             cP.setConnection(httpURLConnection);
             cP.setReader(new InputStreamReader(httpURLConnection.getInputStream()));
-        }catch (Exception e) {
+        } catch (Exception e) {
 //            e.printStackTrace();
             return null;
         }
@@ -161,7 +161,7 @@ public class Crawler {
 
         //if the visit url is redirected to another url.
         //such as "http://www.comp.hkbu.edu.hk/" to "http://www.comp.hkbu.edu.hk/v1/"
-        if(cP.getCode() == 302) {
+        if (cP.getCode() == 302) {
             cP.setUrl(toRedirectedUrl(cP.getUrl().toString()));
             while (matcher.find()) {
                 //TODO: Filter place here
@@ -175,10 +175,10 @@ public class Crawler {
                     } else {
                         String absoluteUrl = "";
                         // /v1/v1/ repeated problem
-                        if(urlStr.contains(cP.getUrl().getPath())) {
-                            absoluteUrl = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() +  urlStr.replaceAll(cP.getUrl().getPath(), cP.getUrl().getPath());
+                        if (urlStr.contains(cP.getUrl().getPath())) {
+                            absoluteUrl = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + urlStr.replaceAll(cP.getUrl().getPath(), cP.getUrl().getPath());
                         } else {
-                            absoluteUrl =  cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + cP.getUrl().getPath() + urlStr;
+                            absoluteUrl = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + cP.getUrl().getPath() + urlStr;
                         }
                         list.add(absoluteUrl);
                     }
@@ -198,7 +198,7 @@ public class Crawler {
         return false;
     }
 
-    public URL toRedirectedUrl(String srcUrl) throws IOException {
+    public static URL toRedirectedUrl(String srcUrl) throws IOException {
         URLConnection con = new URL(srcUrl).openConnection();
         con.connect();
         InputStream is = con.getInputStream();

@@ -1,8 +1,9 @@
 package hk.edu.hkbu.comp.search_engine.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Page {
+public class Page implements Serializable {
     private String url;
     private String title;
     private List<String> words;
@@ -11,11 +12,11 @@ public class Page {
     public Page() {
     }
 
-    public Page(String url, String title, List<String> words) {
+    public Page(String url, String title, int wordCount, List<String> words) {
         this.url = url;
         this.title = title;
         this.words = words;
-        this.wordCount = words.size();
+        this.wordCount = wordCount;
     }
 
     public List<String> getWords() {

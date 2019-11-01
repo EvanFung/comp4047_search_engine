@@ -3,6 +3,10 @@ package hk.edu.hkbu.comp.search_engine.crawler;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.parser.ParserDelegator;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -10,15 +14,20 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
     public ArrayList<String> urls = new ArrayList<String>();
     public String content = new String();
     public String keywordContent = new String();
+    public String bodyContent = new String();
     //title of the page
     public String title = new String();
     public boolean isScript = false;
     public boolean isStyle = false;
     public boolean isMeta = false;
     public boolean isTitle = false;
+    public static boolean isBody = false;
     public boolean encounterMetaName = false;
 
     public void handleStartTag(HTML.Tag tag, MutableAttributeSet attrSet, int pos) {
+        if (tag.equals(HTML.Tag.BODY)) {
+            isBody = true;
+        }
         if (tag == HTML.Tag.SCRIPT) {
             isScript = true;
         } else {
@@ -36,10 +45,8 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
             isMeta = false;
         }
 
-        if (tag == HTML.Tag.TITLE) {
+        if (tag.equals(HTML.Tag.TITLE)) {
             isTitle = true;
-        } else {
-            isTitle = false;
         }
 
         //get a tag
@@ -59,18 +66,26 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
     // Override features of the parent's class
     @Override
     public void handleText(char[] data, int pos) {
-        if (isStyle) {
-//            doSomething(data);
+        if (isTitle) {
+            title = new String(data) + " ";
         }
-        if(isTitle)
-        {
-            title = new String(data);
+        if(isBody) {
+            bodyContent += new String(data) + " ";
         }
+
         content += new String(data) + " ";
     }
 
-    public void doSomething(char[] data) {
-        System.out.println(data);
+
+    @Override
+    public void handleEndTag(HTML.Tag t, int pos) {
+        if(t.equals(HTML.Tag.BODY)) {
+            isBody = false;
+        }
+
+        if(t.equals(HTML.Tag.TITLE)) {
+            isTitle = false;
+        }
     }
 
     @Override
@@ -84,5 +99,35 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
             }
         }
 
+    }
+
+
+    public static String loadBodyText(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        InputStreamReader reader = new InputStreamReader(url.openStream());
+
+        ParserDelegator parser = new ParserDelegator();
+        HTMLParser callback = new HTMLParser();
+        parser.parse(reader, callback, true);
+
+        return callback.bodyContent;
+    }
+
+
+    /**
+     *
+     * @param urlString url of the web page
+     * @return title of the web page
+     * @throws IOException
+     */
+    public static String loadTitleText(String urlString) throws IOException {
+        HTMLParser callback = new HTMLParser();
+        ParserDelegator parser = new ParserDelegator();
+
+        URL url = new URL(urlString);
+        InputStreamReader reader = new InputStreamReader(url.openStream());
+        parser.parse(reader, callback, true); // call MyParserCallback to process the URL stream
+
+        return callback.title;
     }
 }
