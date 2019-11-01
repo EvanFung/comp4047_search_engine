@@ -32,24 +32,26 @@ public class Test {
             System.out.println("Add to deadpool: " + "https://www.bbc.co.uk/news");
             return;
         }
-        {
-            FileOutputStream fileOutputStream = null;
-            ObjectOutputStream objectOutputStream = null;
 
-            wordTable.addPageToWord("apple", page);
 
-            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/wordTable.ser");
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(wordTable);
-        }
-        {
-            FileOutputStream fileOutputStream = null;
-            ObjectOutputStream objectOutputStream = null;
-
-            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/Pages/" + page.getHash()+ ".ser");
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(page);
-        }
+//        {
+//            FileOutputStream fileOutputStream = null;
+//            ObjectOutputStream objectOutputStream = null;
+//
+//            wordTable.addPageToWord("apple", page);
+//
+//            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/wordTable.ser");
+//            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//            objectOutputStream.writeObject(wordTable);
+//        }
+//        {
+//            FileOutputStream fileOutputStream = null;
+//            ObjectOutputStream objectOutputStream = null;
+//
+//            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/Pages/" + page.getHash()+ ".ser");
+//            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//            objectOutputStream.writeObject(page);
+//        }
 
 
 //        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");

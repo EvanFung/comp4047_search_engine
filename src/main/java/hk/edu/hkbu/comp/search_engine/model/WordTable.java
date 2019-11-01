@@ -14,6 +14,14 @@ public class WordTable implements Serializable
         wordRecords.put(word, new ArrayList<>());
     }
 
+    public HashMap<String, ArrayList<String>> getWordRecords() {
+        return wordRecords;
+    }
+
+    public void setWordRecords(HashMap<String, ArrayList<String>> wordRecords) {
+        this.wordRecords = wordRecords;
+    }
+
     public void addPageToWord(String word, Page page)
     {
         if(!wordRecords.containsKey(word))
