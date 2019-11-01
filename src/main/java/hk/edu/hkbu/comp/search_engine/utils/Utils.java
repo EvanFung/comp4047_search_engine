@@ -1,11 +1,11 @@
 package hk.edu.hkbu.comp.search_engine.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +53,21 @@ public class Utils {
         str = str.replaceAll("<script[\\s\\s]+</script *>", "");
         str = str.replaceAll("\\s", "");
         return str;
+    }
+
+    public static String getSHA256(String input){
+
+        String toReturn = null;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.reset();
+            digest.update(input.getBytes("utf8"));
+            toReturn = String.format("%064x", new BigInteger(1, digest.digest()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return toReturn;
     }
 
 }

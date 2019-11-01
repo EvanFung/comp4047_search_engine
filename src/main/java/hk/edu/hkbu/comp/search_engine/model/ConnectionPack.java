@@ -10,7 +10,6 @@ public class ConnectionPack
     private URL url;
     private int code;
     private String contentString;
-    private InputStreamReader reader;
     private URLConnection connection;
 
     public URL getUrl() {
@@ -25,8 +24,8 @@ public class ConnectionPack
         return contentString;
     }
 
-    public InputStreamReader getReader() {
-        return reader;
+    public InputStreamReader getReader() throws IOException {
+        return new InputStreamReader(connection.getInputStream());
     }
 
     public URLConnection getConnection() {
@@ -43,10 +42,6 @@ public class ConnectionPack
 
     public void setContentString(String contentString) {
         this.contentString = contentString;
-    }
-
-    public void setReader(InputStreamReader reader) {
-        this.reader = reader;
     }
 
     public void setConnection(URLConnection connection) {

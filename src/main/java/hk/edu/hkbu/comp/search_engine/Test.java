@@ -2,30 +2,60 @@ package hk.edu.hkbu.comp.search_engine;
 
 import hk.edu.hkbu.comp.search_engine.crawler.Crawler;
 import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
+import hk.edu.hkbu.comp.search_engine.crawler.UrlQueue;
 import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
 import hk.edu.hkbu.comp.search_engine.model.Page;
 import hk.edu.hkbu.comp.search_engine.model.WordTable;
+import hk.edu.hkbu.comp.search_engine.parsing.SplitWord;
 import hk.edu.hkbu.comp.search_engine.utils.Utils;
 
 import javax.swing.text.html.parser.ParserDelegator;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Test {
     public static void main(String[] args) throws Exception {
         WordTable wordTable = new WordTable();
-         String sb =  Crawler.loadWebConnect("https://www.bbc.co.uk/news");
+        //String sb =  Crawler.loadWebConnect("https://www.bbc.co.uk/news");
 
-        List<String> s = Crawler.getUniqueWords(Utils.toUsefulText(sb));
+        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");
+        Page page = Crawler.getPage(connectionPack);
+        if (connectionPack == null || page == null) {
+            UrlQueue.addToDeadpool("https://www.bbc.co.uk/news");
+            System.out.println("Add to deadpool: " + "https://www.bbc.co.uk/news");
+            return;
+        }
+        {
+            FileOutputStream fileOutputStream = null;
+            ObjectOutputStream objectOutputStream = null;
+
+            wordTable.addPageToWord("apple", page);
+
+            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/wordTable.ser");
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(wordTable);
+        }
+        {
+            FileOutputStream fileOutputStream = null;
+            ObjectOutputStream objectOutputStream = null;
+
+            fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/Pages/" + page.getTitle()+ ".ser");
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(page);
+        }
+
 
 //        ConnectionPack connectionPack = Crawler.getConnectionPack("https://www.bbc.co.uk/news");
 //        Page page = Crawler.getPage(connectionPack);
 //
         int i = 0;
-        for (String word:s)
+        for (String word:page.getOriginalWords())
         {
             System.out.print(word + " ");
             if (++i % 20 == 0) System.out.println();

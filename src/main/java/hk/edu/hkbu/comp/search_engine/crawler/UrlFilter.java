@@ -57,8 +57,6 @@ public class UrlFilter extends FilterTool {
         } catch (MalformedURLException e) {
 
         }
-
-
         return true;
     }
 }

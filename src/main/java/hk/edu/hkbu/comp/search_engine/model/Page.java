@@ -1,30 +1,42 @@
 package hk.edu.hkbu.comp.search_engine.model;
 
+import hk.edu.hkbu.comp.search_engine.crawler.HTMLParser;
+import hk.edu.hkbu.comp.search_engine.parsing.SplitWord;
+import hk.edu.hkbu.comp.search_engine.utils.Utils;
+
+import javax.swing.text.html.parser.ParserDelegator;
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class Page implements Serializable {
     private String url;
     private String title;
-    private List<String> words;
+    private List<String> originalWords;
+    private String hash;
+
     private int wordCount;
 
     public Page() {
+
     }
 
-    public Page(String url, String title, int wordCount, List<String> words) {
+    public Page(String url, String title, List<String> originalWords) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         this.url = url;
         this.title = title;
-        this.words = words;
-        this.wordCount = wordCount;
+        this.originalWords = originalWords;
+        this.wordCount = originalWords.size();
+        this.hash = Utils.getSHA256(this.url);
     }
 
-    public List<String> getWords() {
-        return words;
+    public List<String> getOriginalWords() {
+        return originalWords;
     }
 
-    public void setWords(List<String> words) {
-        this.words = words;
+    public void setOriginalWords(List<String> originalWords) {
+        this.originalWords = originalWords;
     }
 
     public String getUrl() {
@@ -55,4 +67,11 @@ public class Page implements Serializable {
         wordCount++;
     }
 
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
 }

@@ -3,6 +3,7 @@ package hk.edu.hkbu.comp.search_engine.crawler;
 import hk.edu.hkbu.comp.search_engine.model.ConnectionPack;
 import hk.edu.hkbu.comp.search_engine.model.WordTable;
 import hk.edu.hkbu.comp.search_engine.model.Page;
+import hk.edu.hkbu.comp.search_engine.parsing.SplitWord;
 
 import javax.swing.text.html.parser.ParserDelegator;
 import java.io.BufferedReader;
@@ -57,17 +58,19 @@ public class Crawler {
             // i) the word,
             // ii) URL with its title, and
             // iii) number of the word containing in the page.
-            //TODO store the words, URL with its title, the number of word containing in the page.
-            //get the corresponding web page.
 
             ConnectionPack connectionPack = getConnectionPack(visitUrl);
             Page page = getPage(connectionPack);
-
             if (connectionPack == null || page == null) {
                 UrlQueue.addToDeadpool(visitUrl);
                 System.out.println("Add to deadpool: " + visitUrl);
                 continue;
             }
+
+
+
+            //TODO store the words, URL with its title, the number of word containing in the page.
+            //get the corresponding web page.
 
             List<String> links = getURLs(connectionPack);
 
@@ -94,14 +97,14 @@ public class Crawler {
             ParserDelegator parser = new ParserDelegator();
             HTMLParser callback = new HTMLParser();
             parser.parse(cP.getReader(), callback, true);
+
             page.setTitle(callback.title);
             page.setUrl(cP.getUrl().toString());
 
-            page.setWords(getUniqueWords(cP.getContentString()));
-
-            page.setWordCount(page.getWords().size());
+            page.setOriginalWords(SplitWord.getSplitWord(cP.getUrl().toString()));
+            page.setWordCount(page.getOriginalWords().size());
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             return null;
         }
         return page;
@@ -118,13 +121,12 @@ public class Crawler {
 
             cP.setCode(httpURLConnection.getResponseCode());
             //content of the html
-            String connect = loadWebConnect(srcPage);
-            if (connect == null) return null;
-            cP.setContentString(loadWebConnect(srcPage));
+            String content = loadWebContent(srcPage);
+            if (content == null) return null;
+            cP.setContentString(loadWebContent(srcPage));
             cP.setConnection(httpURLConnection);
-            cP.setReader(new InputStreamReader(httpURLConnection.getInputStream()));
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             return null;
         }
 
@@ -210,7 +212,7 @@ public class Crawler {
         return str.matches("^[a-z0-9]+://.+");
     }
 
-    public static String loadWebConnect(String urlStr) {
+    public static String loadWebContent(String urlStr) {
         URL url;
         InputStream is = null;
         BufferedReader br;
@@ -240,20 +242,6 @@ public class Crawler {
         }
 
         return result;
-    }
-
-    public static List<String> getUniqueWords(String text) {
-        String[] words = text.split("[\\d\\W]+");
-        ArrayList<String> uniqueWords = new ArrayList<String>();
-
-        for (String w : words) {
-            w = w.toLowerCase();
-
-            if (!uniqueWords.contains(w))
-                uniqueWords.add(w);
-        }
-
-        return uniqueWords;
     }
 
 }
