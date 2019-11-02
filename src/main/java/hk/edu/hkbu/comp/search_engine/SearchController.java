@@ -305,6 +305,8 @@ public class SearchController {
         boolean isFound = false;
         String temp = "";
         String[] parts = orc.split(" ");
+        System.out.println("get partial content is here");
+        System.out.println(parts);
         for (int i=0; i <keywords_list.size();i++){
             for (int j=0; j <parts.length;j++){
                     if (keywords_list.get(i).equalsIgnoreCase(parts[j])){

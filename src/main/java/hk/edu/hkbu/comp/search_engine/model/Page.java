@@ -33,6 +33,9 @@ public class Page implements Serializable {
         this.originalContent = originalContent;
         this.wordCount = new StringTokenizer(originalContent).countTokens();
         this.hash = Utils.getSHA256(this.url);
+        //TODO FOR AR MAN: YOU DO REMEMBER NEXT TIME TO INITIALIZE THE OBJECT BEFORE USING IT!!!!
+        //I fix your bug here !!!!
+        numOfWords = new HashMap<>();
     }
 
     public String getOriginalContent() {
