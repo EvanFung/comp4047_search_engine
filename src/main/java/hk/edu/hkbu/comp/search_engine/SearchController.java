@@ -202,16 +202,21 @@ public class SearchController {
                         System.out.println("found!");
                         if (operator.equals("||")) {
                             tempArrayList = deSer(parts[i]);
+                            keywords_list.add(parts[i]);
                             bucketsOpen_first_null_found = false;
                         }
                     } else if (tempArrayList.isEmpty()) {
                         if (deSer(parts[i]).isEmpty())
                             bucketsOpen_first_null_found = true;
                         else
+                        {
                             tempArrayList = deSer(parts[i]);
+                            if (!operator.equals("!"))
+                                keywords_list.add(parts[i]);
+                        }
                     } else {
                         tempArrayList = solveOperators(operator, tempArrayList, deSer(parts[i]));
-                        if (operator!="!")
+                        if (!operator.equals("!"))
                             keywords_list.add(parts[i]);
                     }
                 }
@@ -254,8 +259,10 @@ public class SearchController {
                 if (operator.equals("||")) {
                     if (bucketsHashs.containsKey(parts[i]))
                         tempArrayList = bucketsHashs.get(parts[i]);
-                    else
+                    else {
                         tempArrayList = deSer(parts[i]);
+                            keywords_list.add(parts[i]);
+                    }
                     first_null_found = false;
                 }
             } else if (tempArrayList.isEmpty()) {
@@ -264,15 +271,18 @@ public class SearchController {
                 else {
                     if (bucketsHashs.containsKey(parts[i]))
                         tempArrayList = bucketsHashs.get(parts[i]);
-                    else
+                    else {
                         tempArrayList = deSer(parts[i]);
+                        if  (!operator.equals("!"))
+                            keywords_list.add(parts[i]);
+                    }
                 }
             } else {
                 if (bucketsHashs.containsKey(parts[i]))
                     solveOperators(operator, tempArrayList, bucketsHashs.get(parts[i]));
                 else {
                     tempArrayList = solveOperators(operator, tempArrayList, deSer(parts[i]));
-                    if (operator!="!")
+                    if  (!operator.equals("!"))
                         keywords_list.add(parts[i]);
                 }
             }
@@ -322,7 +332,7 @@ public class SearchController {
             if (found - i <= 15 && i - found <= 15)
                 temp += parts[i] + " ";
         }
-        return temp;
+        return temp + "...";
     }
 
 
