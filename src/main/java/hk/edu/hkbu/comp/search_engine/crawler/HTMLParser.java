@@ -77,6 +77,10 @@ public class HTMLParser extends HTMLEditorKit.ParserCallback {
         content += new String(data) + " ";
     }
 
+    @Override
+    public void handleComment(char[] data, int pos) {
+        super.handleComment(data, pos);
+    }
 
     @Override
     public void handleEndTag(HTML.Tag t, int pos) {
