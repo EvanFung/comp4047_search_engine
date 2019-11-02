@@ -1,8 +1,8 @@
 package hk.edu.hkbu.comp.search_engine.test;
 
+import hk.edu.hkbu.comp.search_engine.crawler.UrlFilter;
+
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class InfixToPostfix {
@@ -22,16 +22,14 @@ public class InfixToPostfix {
         String text = "Apple NOT (Pear OR Corn)";
 
         String[] word = exp.split("(AND|OR|NOT|\\(|\\))", 100);
-        for(int i = 0;i < exp.length(); i++) {
+        for (int i = 0; i < exp.length(); i++) {
 
         }
         return result;
     }
 
     public static void main(String[] args) {
-        String result = new String();
-        Stack<String> stack = new Stack<>();
-        String text = "Apple NOT (Pear OR Corn)".replaceAll(" ","");
+
 
     }
 }
