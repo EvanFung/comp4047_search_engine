@@ -52,8 +52,7 @@ public class Crawler {
             ConnectionPack connectionPack = new ConnectionPack();
             Page page = new Page();
 
-            if (!connectionPack.setConnectionPack(visitUrl) || !page.setPage(connectionPack))
-            {
+            if (!connectionPack.setConnectionPack(visitUrl) || !page.setPage(connectionPack)) {
                 UrlQueue.addToDeadpool(visitUrl);
                 System.out.println("Add to deadpool: " + visitUrl);
                 continue;
@@ -70,8 +69,7 @@ public class Crawler {
             List<String> links = getURLs(connectionPack);
 
             for (String url : links) {
-                if (UrlQueue.getUrlPoolSize() < x && urlFilter.accept(url) && !url.equals(visitUrl))
-                {
+                if (UrlQueue.getUrlPoolSize() < x && urlFilter.accept(url) && !url.equals(visitUrl)) {
                     UrlQueue.addToUrlPool(url);
                 }
             }
@@ -99,17 +97,22 @@ public class Crawler {
             //if url is found, keep looping
             while (matcher.find()) {
                 //TODO: Filter place here
-
                 //remove the url double quote
                 String urlStr = matcher.group(1).replaceAll("\"|\'", "");
                 //if not contain # and not in the except list of url
                 if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException)) {
                     if (isAbsURL(urlStr)) {
+                        System.out.print("");
                         list.add(urlStr);
                     } else {
-                        String absoluteUrl = "";
-                        absoluteUrl = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + urlStr;
-                        list.add(absoluteUrl);
+                        String relativePath = "";
+                        // /v1/v1/ repeated problem
+                        if (urlStr.contains(cP.getUrl().getPath())) {
+                            relativePath = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + urlStr.replaceAll(cP.getUrl().getPath(), cP.getUrl().getPath());
+                        } else {
+                            relativePath = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + cP.getUrl().getPath() + urlStr;
+                        }
+                        list.add(relativePath);
                     }
                 }
             }
@@ -202,7 +205,7 @@ public class Crawler {
         FileOutputStream fileOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
 
-        fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/Pages/" + page.getHash()+ ".ser");
+        fileOutputStream = new FileOutputStream("./src/main/java/hk/edu/hkbu/comp/search_engine/Record/Pages/" + page.getHash() + ".ser");
         objectOutputStream = new ObjectOutputStream(fileOutputStream);
         objectOutputStream.writeObject(page);
     }
