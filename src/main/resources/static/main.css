@@ -74,7 +74,6 @@ h2{
     line-height:50px;
     white-space: nowrap;
     text-overflow: ellipsis;
-
 }
 
 .body-url{
@@ -83,4 +82,17 @@ h2{
 }
 .body-content {
     margin-top: 0px;
+    width:100%;
+    overflow:hidden;
+    height:75px;
+}
+h5 {
+    display: -webkit-box;
+    width:100%;
+    overflow:hidden;
+    height:75px;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+
 }
