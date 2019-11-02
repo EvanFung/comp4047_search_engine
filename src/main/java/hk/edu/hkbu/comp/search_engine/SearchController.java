@@ -33,7 +33,7 @@ public class SearchController {
         ResultArray = getResult(final_SearchEquation, bucketsHash);
         for (int i = 0; i < ResultArray.size(); i++) {
         Result result = new Result();
-            System.out.println(ResultArray.get(i).toString());
+//            System.out.println(ResultArray.get(i).toString());
            System.out.println(deSer_page(ResultArray.get(i).toString()).getUrl());
            if (!deSer_page(ResultArray.get(i).toString()).getTitle().equals(""))
                result.setTitle(deSer_page(ResultArray.get(i).toString()).getTitle());
@@ -300,29 +300,44 @@ public class SearchController {
         return page;
     }
 
-    public static String getPartial_content(String orc){
-        int found = 0;
-        boolean isFound = false;
-        String temp = "";
-        String[] parts = orc.split(" ");
-        System.out.println("get partial content is here");
-        System.out.println(parts);
-        for (int i=0; i <keywords_list.size();i++){
-            for (int j=0; j <parts.length;j++){
-                    if (keywords_list.get(i).equalsIgnoreCase(parts[j])){
-                        found = j;
-                        isFound = true;
-                        break;
-                    }
+    public static String getPartial_content(String original){
+        String[] words = original.split(" ");
+        ArrayList<String> wordsList = new ArrayList<>();
+        for(String s : words) {
+            wordsList.add(s);
+        }
+        for(int i = 0;i < wordsList.size(); i++) {
+            if(wordsList.get(i).contains(" ") || wordsList.get(i).contains("|")) {
+                System.out.println("has been removed" + wordsList.get(i));
+                wordsList.remove(i);
             }
-            if (isFound)
-                break;
         }
-        for (int i = 0; i < parts.length; i++) {
-            if (found - i <= 15 && i - found <= 15)
-                temp += parts[i] + " ";
-        }
-        return temp;
+        
+        return "FUCK YOU ";
+
+//        int found = 0;
+//        boolean isFound = false;
+//        String temp = "";
+//        String[] parts = orc.split(" ");
+//        for (int i=0; i <keywords_list.size();i++){
+//            for (int j=0; j <parts.length;j++){
+//                    if (keywords_list.get(i).equalsIgnoreCase(parts[j])){
+//                        found = j;
+//                        isFound = true;
+//                        break;
+//                    }
+//            }
+//            if (isFound)
+//                break;
+//        }
+//
+//        System.out.println("WHAT YOU HAVE FOUND IS " + parts[found]);
+//        for (int i = 0; i < parts.length; i++) {
+//            if (found - i <= 15 && i - found <= 15)
+//                temp += parts[i] + " ";
+//        }
+//        System.out.println(temp);
+//        return temp;
     }
 
 
