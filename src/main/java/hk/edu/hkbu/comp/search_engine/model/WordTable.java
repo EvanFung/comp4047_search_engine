@@ -35,15 +35,4 @@ public class WordTable implements Serializable {
         }
     }
 
-//    public void printAll()
-//    {
-//        for (Map.Entry<String, List<Page>> wordRecord: wordRecords.entrySet())
-//        {
-//            System.out.println(wordRecord.getKey() + ":");
-//            for (Page page : wordRecord.getValue())
-//            {
-//                System.out.println(page.getUrl());
-//            }
-//        }
-//    }
 }

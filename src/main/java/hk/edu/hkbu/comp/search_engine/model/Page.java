@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 public class Page implements Serializable {
     private String url;
@@ -21,7 +22,8 @@ public class Page implements Serializable {
 
     private int wordCount;
 
-    public Page() {}
+    public Page() {
+    }
 
     public Page(String url, String title, String originalContent) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         this.url = url;
@@ -84,7 +86,14 @@ public class Page implements Serializable {
             setTitle(callback.title);
             setUrl(cP.getUrl().toString());
 
-            String bodyText = HTMLParser.loadBodyText(cP.getContentString());
+            //remove all comment String
+            String contentText = cP.getContentString().replaceAll("//(.*?)\n", "");
+            contentText.replaceAll("\\<(meta|iframe|frame|span|tbody|layer)[^>]*>|<\\/(iframe|frame|meta|span|tbody|layer)>",
+                    "");
+            contentText.replaceAll("<script[\\s\\s]+</script *>", "");
+            contentText.replaceAll("<SCRIPT[\\s\\s]+</SCRIPT *>", "");
+            
+            String bodyText = HTMLParser.loadBodyText(contentText);
 
             setOriginalContent(bodyText);
             setWordCount(getOriginalContent().length());
