@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -18,6 +19,7 @@ public class Page implements Serializable {
     private String title;
     private String originalContent;
     private String hash;
+    private HashMap<String, Integer> numOfWords;
 
     private int wordCount;
 
@@ -94,5 +96,18 @@ public class Page implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public void setNumOfWords(ArrayList<String> uniqueWords)
+    {
+        for (String word : uniqueWords)
+        {
+            if(!numOfWords.containsKey(word))
+            {
+                numOfWords.put(word, 0);
+            }
+
+            this.numOfWords.put(word, this.numOfWords.get(word) + 1);
+        }
     }
 }

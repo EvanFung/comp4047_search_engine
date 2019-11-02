@@ -60,6 +60,7 @@ public class Crawler {
             }
 
             ArrayList<String> UniqueWords = SplitWord.splitToUniqueWords(page.getOriginalContent());
+            page.setNumOfWords(UniqueWords);
             ArrayList<String> filteredWords = FilterTool.filterWords(UniqueWords);
 
             wordTable.addPageToWords(filteredWords, page);
