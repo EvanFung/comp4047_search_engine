@@ -177,7 +177,7 @@ public class Crawler {
             br = new BufferedReader(new InputStreamReader(is));
 
             while ((line = br.readLine()) != null) {
-                result += line;
+                result += line + "\n";
             }
         } catch (MalformedURLException mue) {
             mue.printStackTrace();

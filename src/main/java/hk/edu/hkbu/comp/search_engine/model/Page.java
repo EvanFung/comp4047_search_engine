@@ -87,12 +87,21 @@ public class Page implements Serializable {
             setUrl(cP.getUrl().toString());
 
             //remove all comment String
-            String contentText = cP.getContentString().replaceAll("//(.*?)\n", "");
-            contentText.replaceAll("\\<(meta|iframe|frame|span|tbody|layer)[^>]*>|<\\/(iframe|frame|meta|span|tbody|layer)>",
-                    "");
-            contentText.replaceAll("<script[\\s\\s]+</script *>", "");
-            contentText.replaceAll("<SCRIPT[\\s\\s]+</SCRIPT *>", "");
-            
+            String contentText = cP.getContentString().replaceAll("//(.*?)\n", "")                    .replaceAll("\n", "")
+                    .replaceAll("(?i)<style(.*?)>(.*?)</style>", "")
+                    .replaceAll("(?i)<script(.*?)>(.*?)</script>", "")
+                    .replaceAll("<!--(.*?)-->", "")
+                    .replaceAll("/\\*(.*?)\\*/", "");
+//            contentText = contentText.replaceAll("\\<(meta|iframe|frame|span|tbody|layer)[^>]*>|<\\/(iframe|frame|meta|span|tbody|layer)>",
+//                    "");
+//            contentText = contentText.replaceAll("(?i:<script[\\s\\s]+</script *>)", "");
+//            contentText = contentText.replaceAll("<SCRIPT[\\s\\s]+</SCRIPT *>", "");
+//            contentText = contentText.replaceAll("<!--(.*?)-->", "");
+//            contentText = contentText.replaceAll("\\<(style|strong)[^>]*>|<\\/(style|strong)>", "");
+//            contentText = contentText.replaceAll("\\<(meta|iframe|frame|span|tbody|layer)[^>]*>|<\\/(iframe|frame|meta|span|tbody|layer)>",
+//                    "");
+//            contentText = contentText.replaceAll("<script[\\s\\s]+</script *>", "");
+//            contentText = contentText.replaceAll("\\s", "");
             String bodyText = HTMLParser.loadBodyText(contentText);
 
             setOriginalContent(bodyText);
