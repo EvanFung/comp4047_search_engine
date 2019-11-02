@@ -329,7 +329,7 @@ public class SearchController {
                 break;
         }
         for (int i = 0; i < parts.length; i++) {
-            if (found - i <= 15 && i - found <= 15)
+            if (found - i <= 18 && i - found <= 25)
                 temp += parts[i] + " ";
         }
         return temp + "...";
