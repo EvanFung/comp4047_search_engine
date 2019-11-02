@@ -97,10 +97,13 @@ public class SearchController {
             //System.out.println(workTable_object.getPageIDsByWord("apple").toString().substring(1,workTable_object.getPageIDsByWord("apple").toString().length()-1));
 
             if (workTable_object.getPageIDsByWord(keywords) != null) {
-                tempArray = workTable_object.getPageIDsByWord(keywords);
-                for (int i = 0; i < tempArray.size(); i++) {
+                Set<String> set = new HashSet<>(workTable_object.getPageIDsByWord(keywords));
+                tempArray.addAll(set);
+                //tempArray = workTable_object.getPageIDsByWord(keywords);
+
+                //for (int i = 0; i < tempArray.size(); i++) {
                     // System.out.println(tempArray.get(i).toString());
-                }
+          //      }
             } else {
                 System.out.println("No result found!.");
             }
@@ -320,5 +323,5 @@ public class SearchController {
         return temp;
     }
 
-    
+
 }
