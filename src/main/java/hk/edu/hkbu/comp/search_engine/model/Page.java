@@ -25,6 +25,7 @@ public class Page implements Serializable {
     private int wordCount;
 
     public Page() {
+        numOfWords = new HashMap<>();
     }
 
     public Page(String url, String title, String originalContent) throws UnsupportedEncodingException, NoSuchAlgorithmException {
