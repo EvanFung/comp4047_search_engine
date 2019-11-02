@@ -21,17 +21,21 @@
     <div class="row">
         <div class="size-box"></div>
     </div>
-    <div class="row result-body" th:each="result : ${results}">
+    <div class="row result-body div_result" th:each="result : ${results}">
         <div class="col-12">
             <div class="row body-title">
                 <div class="col-12">
-                    <a href="#"><h3 th:text="${result.getTitle()}">title of the search result</h3></a>
-                    <cite><h3 th:text="${result.getUrl()}">title of the search result</h3></cite>
+                    <a href="#"><h2 th:text="${result.getTitle()}">title of the search result</h2></a>
+                </div>
+            </div>
+            <div class="row body-url">
+                <div class="col-12">
+                    <cite><h4 th:text="${result.getUrl()}">title of the search result</h4></cite>
                 </div>
             </div>
             <div class="row body-content">
                 <div class="col-12">
-                    <h3 th:text="${result.getPartialContent()}">partial content of the search result</h3>
+                    <h4 th:text="${result.getPartialContent()}">partial content of the search result</h4>
 
                 </div>
             </div>
