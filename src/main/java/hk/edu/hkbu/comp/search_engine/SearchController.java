@@ -42,6 +42,7 @@ public class SearchController {
             result.setUrl(deSer_page(ResultArray.get(i).toString()).getUrl());
             result.setPartialContent(getPartial_content(deSer_page(ResultArray.get(i).toString()).getOriginalContent()));
             System.out.println(getKeywordsCount(deSer_page(ResultArray.get(i))));
+            result.setKeyWordsCount(getKeywordsCount(deSer_page(ResultArray.get(i))));
             Final_ResultArray.add(result);
         }
         resultList.setResults(Final_ResultArray);
