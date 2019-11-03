@@ -21,7 +21,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
 
         WordTable wordTable = new WordTable();
-        Crawler crawler = new Crawler(wordTable, "https://www.reddit.com", 100,100);
+        Crawler crawler = new Crawler(wordTable, "https://komica.org/bbsmenu.html", 100,100);
         crawler.crawling();
 
 
