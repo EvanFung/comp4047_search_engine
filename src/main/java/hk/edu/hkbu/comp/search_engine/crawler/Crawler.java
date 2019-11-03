@@ -57,7 +57,6 @@ public class Crawler {
                 System.out.println("Add to deadpool: " + visitUrl);
                 continue;
             }
-
             ArrayList<String> UniqueWords = SplitWord.splitToUniqueWords(page.getOriginalContent());
             page.setNumOfWords(UniqueWords);
             ArrayList<String> filteredWords = FilterTool.filterWords(UniqueWords);
@@ -67,6 +66,7 @@ public class Crawler {
             recordPage(page);
 
             List<String> links = getURLs(connectionPack);
+
 
             for (String url : links) {
                 if (UrlQueue.getUrlPoolSize() < x && urlFilter.accept(url) && !url.equals(visitUrl)) {
@@ -89,6 +89,7 @@ public class Crawler {
 
         List<String> list = new ArrayList<>();
 
+
         // url regex
         Pattern pattern = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(cP.getContentString());
@@ -99,20 +100,17 @@ public class Crawler {
                 //TODO: Filter place here
                 //remove the url double quote
                 String urlStr = matcher.group(1).replaceAll("\"|\'", "");
+//                System.out.println("Url str : " + urlStr);
                 //if not contain # and not in the except list of url
-                if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException)) {
+                if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException) && !urlStr.startsWith("//")) {
+                    //handle this case: //static.bbc.co.uk //nav.files.bbci.co.uk
                     if (isAbsURL(urlStr)) {
                         System.out.print("");
                         list.add(urlStr);
                     } else {
-                        String relativePath = "";
-                        // /v1/v1/ repeated problem
-                        if (urlStr.contains(cP.getUrl().getPath())) {
-                            relativePath = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + urlStr.replaceAll(cP.getUrl().getPath(), cP.getUrl().getPath());
-                        } else {
-                            relativePath = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + cP.getUrl().getPath() + urlStr;
-                        }
-                        list.add(relativePath);
+                        String absoluteUrl = "";
+                        absoluteUrl = cP.getUrl().getProtocol() + "://" + cP.getUrl().getHost() + urlStr;
+                        list.add(absoluteUrl);
                     }
                 }
             }
@@ -147,6 +145,7 @@ public class Crawler {
 
         return list;
     }
+
 
     private static boolean isInExceptUrl(String str, String[] exceptWords) {
         for (int i = 0; i < exceptWords.length; i++) {

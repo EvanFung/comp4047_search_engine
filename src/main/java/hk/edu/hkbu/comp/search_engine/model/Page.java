@@ -130,4 +130,11 @@ public class Page implements Serializable {
             this.numOfWords.put(word, this.numOfWords.get(word) + 1);
         }
     }
+
+    public int getNumOfWords(String keywords) {
+        int num = 0;
+        if (numOfWords.get(keywords)!=null)
+            num = numOfWords.get(keywords);
+        return num;
+    }
 }

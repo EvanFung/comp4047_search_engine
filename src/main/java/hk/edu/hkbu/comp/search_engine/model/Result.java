@@ -13,15 +13,18 @@ public class Result {
     private String title;
     //The content of the article which is contained in the search word
     private String partialContent;
+    //keyWords Count
+    private int keyWordsCount;
 
     public Result() {
     }
 
-    public Result(String word, String url, String title, String partialContent) {
+    public Result(String word, String url, String title, String partialContent, int keyWordsCount) {
         this.word = word;
         this.url = url;
         this.title = title;
         this.partialContent = partialContent;
+        this.keyWordsCount = keyWordsCount;
     }
 
 
@@ -55,5 +58,13 @@ public class Result {
 
     public void setPartialContent(String partialContent) {
         this.partialContent = partialContent;
+    }
+
+    public int getKeyWordsCount() {
+        return keyWordsCount;
+    }
+
+    public void setKeyWordsCount(int keyWordsCount) {
+        this.keyWordsCount = keyWordsCount;
     }
 }
