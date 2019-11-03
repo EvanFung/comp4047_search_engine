@@ -41,7 +41,8 @@ public class SearchController {
                result.setTitle(deSer_page(ResultArray.get(i).toString()).getUrl());
             result.setUrl(deSer_page(ResultArray.get(i).toString()).getUrl());
             result.setPartialContent(getPartial_content(deSer_page(ResultArray.get(i).toString()).getOriginalContent()));
-            System.out.println(getPartial_content(deSer_page(ResultArray.get(i).toString()).getOriginalContent()));
+            System.out.println(getKeywordsCount(deSer_page(ResultArray.get(i))));
+            result.setKeyWordsCount(getKeywordsCount(deSer_page(ResultArray.get(i))));
             Final_ResultArray.add(result);
         }
         resultList.setResults(Final_ResultArray);
@@ -335,5 +336,12 @@ public class SearchController {
         return temp + "...";
     }
 
+    public static int getKeywordsCount(Page page){
+        int count = 0;
+        for (int i = 0; i <keywords_list.size() ; i++) {
+            count += page.getNumOfWords(keywords_list.get(i).toLowerCase());
+        }
+        return count;
+    }
 
 }
