@@ -55,10 +55,16 @@ public class ConnectionPack
         try {
             setUrl(new URL(srcPage));
             HttpURLConnection httpURLConnection = (HttpURLConnection) getUrl().openConnection();
-            httpURLConnection.setInstanceFollowRedirects(true);
-            setUrl(httpURLConnection.getURL());
+            httpURLConnection.setInstanceFollowRedirects(false);
 
             setCode(httpURLConnection.getResponseCode());
+
+            System.out.println("getCode(): " + getCode());
+
+            if(getCode() == 302)
+            {
+                if(Crawler.isInExceptUrl(Crawler.toRedirectedUrl(getUrl().toString()).toString(), Crawler.URLException)) return false;
+            }
 
             //content of the html
             String content = Crawler.loadWebContent(srcPage);

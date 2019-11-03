@@ -94,7 +94,7 @@ public class Crawler {
         Pattern pattern = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(cP.getContentString());
         //
-        if (cP.getCode() == 200) {
+        if (cP.getCode() == 200){
             //if url is found, keep looping
             while (matcher.find()) {
                 //remove the url double quote
