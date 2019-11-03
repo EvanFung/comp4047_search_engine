@@ -1,16 +1,13 @@
 package hk.edu.hkbu.comp.search_engine.crawler;
 
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 public class UrlQueue {
 
     //processed url pool
     private static Set<String> processedUrlPool = new HashSet<>();
     //url pool
-    private static Queue<String> urlPool = new PriorityQueue<>();
+    private static Queue<String> urlPool = new LinkedList<>();
 
     private static Set<String> deadpool = new HashSet<>();
 

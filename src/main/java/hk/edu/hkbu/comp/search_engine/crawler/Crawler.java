@@ -24,7 +24,7 @@ public class Crawler {
     //maximum number of web pages that crawled
     final int Y = 100;
     final int X = 10;
-    final String[] URLException = {".pdf", "..", ".gif", ".png", ".jpg", ".ico", "javascript", "mailto",
+    public static final String[] URLException = {".pdf", "..", ".gif", ".png", ".jpg", ".ico", "javascript", "mailto",
             ".css", "adobe", "turnitin"};
 
     private int x, y;
@@ -97,12 +97,12 @@ public class Crawler {
         if (cP.getCode() == 200) {
             //if url is found, keep looping
             while (matcher.find()) {
-                //TODO: Filter place here
                 //remove the url double quote
                 String urlStr = matcher.group(1).replaceAll("\"|\'", "");
 //                System.out.println("Url str : " + urlStr);
                 //if not contain # and not in the except list of url
                 if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException) && !urlStr.startsWith("//")) {
+                    System.out.println("cP.getCode(): " + cP.getCode() + ": " + urlStr);
                     //handle this case: //static.bbc.co.uk //nav.files.bbci.co.uk
                     if (isAbsURL(urlStr)) {
                         System.out.print("");
@@ -121,12 +121,11 @@ public class Crawler {
         if (cP.getCode() == 302) {
             cP.setUrl(toRedirectedUrl(cP.getUrl().toString()));
             while (matcher.find()) {
-                //TODO: Filter place here
-
                 //remove the url double quote
                 String urlStr = matcher.group(1).replaceAll("\"|\'", "");
                 //if not contain # and not in the except list of url
-                if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException)) {
+                if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException) && !urlStr.startsWith("//")) {
+                    System.out.println("cP.getCode(): " + cP.getCode() + ": " + urlStr);
                     if (isAbsURL(urlStr)) {
                         list.add(urlStr);
                     } else {
@@ -147,7 +146,7 @@ public class Crawler {
     }
 
 
-    private static boolean isInExceptUrl(String str, String[] exceptWords) {
+    public static boolean isInExceptUrl(String str, String[] exceptWords) {
         for (int i = 0; i < exceptWords.length; i++) {
             if (str.contains(exceptWords[i])) {
                 return true;
