@@ -24,10 +24,12 @@
     <div class="row result-body div_result" th:each="result : ${results}">
         <div class="col-12">
             <div class="row body-title">
-                <div class="col-12">
+                <div class="col-8">
                     <a th:href="${result.getUrl()}" target="_blank"><h2 th:text="${result.getTitle()}">title of the search result</h2></a>
                 </div>
+                <div class="col-4 keyword-count"><p>KeyWords Found: <span th:text="${result.getKeyWordsCount()}"></span></p></div>
             </div>
+<!--            <div class="div_keywords">KeyWords Found: 50</div>-->
             <div class="row body-url">
                 <div class="col-12">
                     <cite><h4 th:text="${result.getUrl()}">title of the search result</h4></cite>

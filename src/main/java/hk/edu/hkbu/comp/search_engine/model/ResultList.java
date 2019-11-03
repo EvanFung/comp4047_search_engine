@@ -1,6 +1,7 @@
 package hk.edu.hkbu.comp.search_engine.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ResultList {
     private ArrayList<Result> results;
