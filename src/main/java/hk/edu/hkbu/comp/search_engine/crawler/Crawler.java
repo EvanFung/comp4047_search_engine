@@ -25,7 +25,7 @@ public class Crawler {
     final int Y = 100;
     final int X = 10;
     public static final String[] URLException = {".pdf", "..", ".gif", ".png", ".jpg", ".ico", "javascript", "mailto",
-            ".css", "adobe", "turnitin", ".svg", ".js"};
+            ".css", "adobe", "turnitin"};
 
     private int x, y;
     private String seed;
@@ -93,17 +93,19 @@ public class Crawler {
         // url regex
         Pattern pattern = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(cP.getContentString());
-
-
-        if (cP.getCode() == 200) {
+        //
+        if (cP.getCode() == 200){
             //if url is found, keep looping
             while (matcher.find()) {
                 //remove the url double quote
                 String urlStr = matcher.group(1).replaceAll("\"|\'", "");
+//                System.out.println("Url str : " + urlStr);
                 //if not contain # and not in the except list of url
                 if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException) && !urlStr.startsWith("//")) {
+                    System.out.println("cP.getCode(): " + cP.getCode() + ": " + urlStr);
                     //handle this case: //static.bbc.co.uk //nav.files.bbci.co.uk
                     if (isAbsURL(urlStr)) {
+                        System.out.print("");
                         list.add(urlStr);
                     } else {
                         String absoluteUrl = "";
@@ -114,7 +116,6 @@ public class Crawler {
             }
         }
 
-
         //if the visit url is redirected to another url.
         //such as "http://www.comp.hkbu.edu.hk/" to "http://www.comp.hkbu.edu.hk/v1/"
         if (cP.getCode() == 302) {
@@ -124,6 +125,7 @@ public class Crawler {
                 String urlStr = matcher.group(1).replaceAll("\"|\'", "");
                 //if not contain # and not in the except list of url
                 if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException) && !urlStr.startsWith("//")) {
+                    System.out.println("cP.getCode(): " + cP.getCode() + ": " + urlStr);
                     if (isAbsURL(urlStr)) {
                         list.add(urlStr);
                     } else {

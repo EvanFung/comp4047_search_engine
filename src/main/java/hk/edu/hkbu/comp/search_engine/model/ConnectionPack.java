@@ -8,20 +8,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class ConnectionPack {
+public class ConnectionPack
+{
     private URL url;
     private int code;
     private String contentString;
     private URLConnection connection;
-    private String location;
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public URL getUrl() {
         return url;
@@ -63,10 +55,16 @@ public class ConnectionPack {
         try {
             setUrl(new URL(srcPage));
             HttpURLConnection httpURLConnection = (HttpURLConnection) getUrl().openConnection();
-            httpURLConnection.setInstanceFollowRedirects(true);
-            setUrl(httpURLConnection.getURL());
+            httpURLConnection.setInstanceFollowRedirects(false);
+
             setCode(httpURLConnection.getResponseCode());
 
+            System.out.println("getCode(): " + getCode());
+
+            if(getCode() == 302)
+            {
+                if(Crawler.isInExceptUrl(Crawler.toRedirectedUrl(getUrl().toString()).toString(), Crawler.URLException)) return false;
+            }
 
             //content of the html
             String content = Crawler.loadWebContent(srcPage);
