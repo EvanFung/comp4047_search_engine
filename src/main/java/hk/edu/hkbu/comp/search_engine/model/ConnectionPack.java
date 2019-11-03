@@ -53,16 +53,13 @@ public class ConnectionPack
 
     public boolean setConnectionPack(String srcPage) throws IOException {
         try {
-
-
             setUrl(new URL(srcPage));
             HttpURLConnection httpURLConnection = (HttpURLConnection) getUrl().openConnection();
-            httpURLConnection.setInstanceFollowRedirects(false);
+            httpURLConnection.setInstanceFollowRedirects(true);
+            setUrl(httpURLConnection.getURL());
 
             setCode(httpURLConnection.getResponseCode());
-            if(getCode() == 302) {
-              setUrl(Crawler.toRedirectedUrl(srcPage));
-            }
+
             //content of the html
             String content = Crawler.loadWebContent(srcPage);
             if (content == null) return false;

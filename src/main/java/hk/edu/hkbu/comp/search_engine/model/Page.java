@@ -20,13 +20,11 @@ public class Page implements Serializable {
     private String title;
     private String originalContent;
     private String hash;
-    private HashMap<String, Integer> numOfWords;
+    private HashMap<String, Integer> numOfWords = new HashMap<>();
 
     private int wordCount;
 
-    public Page() {
-        numOfWords = new HashMap<>();
-    }
+    public Page() {}
 
     public Page(String url, String title, String originalContent) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         this.url = url;

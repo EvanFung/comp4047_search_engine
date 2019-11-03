@@ -16,7 +16,8 @@ import java.util.*;
 @Controller
 public class SearchController {
     public static String final_SearchEquation;
-    public static ArrayList<String> keywords_list= new ArrayList<>();
+    public static ArrayList<String> keywords_list = new ArrayList<>();
+
     @GetMapping("/")
     public String greeting(String name, Model model) {
         model.addAttribute("query", new Query());
@@ -25,20 +26,20 @@ public class SearchController {
 
     @PostMapping("/")
     public String greetingSubmit(@ModelAttribute Query query, @ModelAttribute ResultList resultList, Model model) {
-        ArrayList<String> keywords_list= new ArrayList<>();
+        ArrayList<String> keywords_list = new ArrayList<>();
         final_SearchEquation = "";
         ArrayList<String> ResultArray = new ArrayList<>();
         ArrayList<Result> Final_ResultArray = new ArrayList<>();
         HashMap<String, ArrayList<String>> bucketsHash = solveBuckets(getSearchEquation(query.getQueryWord()));
         ResultArray = getResult(final_SearchEquation, bucketsHash);
         for (int i = 0; i < ResultArray.size(); i++) {
-        Result result = new Result();
+            Result result = new Result();
             System.out.println(ResultArray.get(i).toString());
-           System.out.println(deSer_page(ResultArray.get(i).toString()).getUrl());
-           if (!deSer_page(ResultArray.get(i).toString()).getTitle().equals(""))
-               result.setTitle(deSer_page(ResultArray.get(i).toString()).getTitle());
-           else
-               result.setTitle(deSer_page(ResultArray.get(i).toString()).getUrl());
+            System.out.println(deSer_page(ResultArray.get(i).toString()).getUrl());
+            if (!deSer_page(ResultArray.get(i).toString()).getTitle().equals(""))
+                result.setTitle(deSer_page(ResultArray.get(i).toString()).getTitle());
+            else
+                result.setTitle(deSer_page(ResultArray.get(i).toString()).getUrl());
             result.setUrl(deSer_page(ResultArray.get(i).toString()).getUrl());
             result.setPartialContent(getPartial_content(deSer_page(ResultArray.get(i).toString()).getOriginalContent()));
             System.out.println(getKeywordsCount(deSer_page(ResultArray.get(i))));
@@ -46,6 +47,7 @@ public class SearchController {
             Final_ResultArray.add(result);
         }
         resultList.setResults(Final_ResultArray);
+        Collections.sort(resultList.getResults(), new ResultRanking());
         model.addAttribute("results", resultList.getResults());
         deSer("hot");
         return "results";//view
@@ -103,8 +105,8 @@ public class SearchController {
                 //tempArray = workTable_object.getPageIDsByWord(keywords);
 
                 //for (int i = 0; i < tempArray.size(); i++) {
-                    // System.out.println(tempArray.get(i).toString());
-          //      }
+                // System.out.println(tempArray.get(i).toString());
+                //      }
             } else {
                 System.out.println("No result found!.");
             }
@@ -209,8 +211,7 @@ public class SearchController {
                     } else if (tempArrayList.isEmpty()) {
                         if (deSer(parts[i]).isEmpty())
                             bucketsOpen_first_null_found = true;
-                        else
-                        {
+                        else {
                             tempArrayList = deSer(parts[i]);
                             if (!operator.equals("!"))
                                 keywords_list.add(parts[i]);
@@ -262,7 +263,7 @@ public class SearchController {
                         tempArrayList = bucketsHashs.get(parts[i]);
                     else {
                         tempArrayList = deSer(parts[i]);
-                            keywords_list.add(parts[i]);
+                        keywords_list.add(parts[i]);
                     }
                     first_null_found = false;
                 }
@@ -274,7 +275,7 @@ public class SearchController {
                         tempArrayList = bucketsHashs.get(parts[i]);
                     else {
                         tempArrayList = deSer(parts[i]);
-                        if  (!operator.equals("!"))
+                        if (!operator.equals("!"))
                             keywords_list.add(parts[i]);
                     }
                 }
@@ -283,7 +284,7 @@ public class SearchController {
                     solveOperators(operator, tempArrayList, bucketsHashs.get(parts[i]));
                 else {
                     tempArrayList = solveOperators(operator, tempArrayList, deSer(parts[i]));
-                    if  (!operator.equals("!"))
+                    if (!operator.equals("!"))
                         keywords_list.add(parts[i]);
                 }
             }
@@ -311,20 +312,20 @@ public class SearchController {
         return page;
     }
 
-    public static String getPartial_content(String orc){
+    public static String getPartial_content(String orc) {
         int found = 0;
         boolean isFound = false;
         String temp = "";
         String[] parts = orc.split(" ");
         System.out.println("get partial content is here");
         System.out.println(parts);
-        for (int i=0; i <keywords_list.size();i++){
-            for (int j=0; j <parts.length;j++){
-                    if (keywords_list.get(i).equalsIgnoreCase(parts[j])){
-                        found = j;
-                        isFound = true;
-                        break;
-                    }
+        for (int i = 0; i < keywords_list.size(); i++) {
+            for (int j = 0; j < parts.length; j++) {
+                if (keywords_list.get(i).equalsIgnoreCase(parts[j])) {
+                    found = j;
+                    isFound = true;
+                    break;
+                }
             }
             if (isFound)
                 break;
@@ -336,9 +337,9 @@ public class SearchController {
         return temp + "...";
     }
 
-    public static int getKeywordsCount(Page page){
+    public static int getKeywordsCount(Page page) {
         int count = 0;
-        for (int i = 0; i <keywords_list.size() ; i++) {
+        for (int i = 0; i < keywords_list.size(); i++) {
             count += page.getNumOfWords(keywords_list.get(i).toLowerCase());
         }
         return count;

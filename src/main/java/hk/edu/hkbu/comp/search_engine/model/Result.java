@@ -1,5 +1,7 @@
 package hk.edu.hkbu.comp.search_engine.model;
 
+import java.util.Comparator;
+
 /**
  * Used for storing single result
  * @author EVAN FUNG
