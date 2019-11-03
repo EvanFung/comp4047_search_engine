@@ -94,7 +94,7 @@ public class Crawler {
         Pattern pattern = Pattern.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(cP.getContentString());
         //
-        if (cP.getCode() == 200){
+        if (cP.getCode() == 200) {
             //if url is found, keep looping
             while (matcher.find()) {
                 //remove the url double quote
@@ -102,7 +102,6 @@ public class Crawler {
 //                System.out.println("Url str : " + urlStr);
                 //if not contain # and not in the except list of url
                 if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException) && !urlStr.startsWith("//")) {
-                    System.out.println("cP.getCode(): " + cP.getCode() + ": " + urlStr);
                     //handle this case: //static.bbc.co.uk //nav.files.bbci.co.uk
                     if (isAbsURL(urlStr)) {
                         System.out.print("");
@@ -125,7 +124,6 @@ public class Crawler {
                 String urlStr = matcher.group(1).replaceAll("\"|\'", "");
                 //if not contain # and not in the except list of url
                 if (!urlStr.contains("#") && !isInExceptUrl(urlStr, URLException) && !urlStr.startsWith("//")) {
-                    System.out.println("cP.getCode(): " + cP.getCode() + ": " + urlStr);
                     if (isAbsURL(urlStr)) {
                         list.add(urlStr);
                     } else {

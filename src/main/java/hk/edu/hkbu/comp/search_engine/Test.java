@@ -10,18 +10,24 @@ import hk.edu.hkbu.comp.search_engine.model.WordTable;
 import hk.edu.hkbu.comp.search_engine.parsing.SplitWord;
 
 import javax.swing.text.html.parser.ParserDelegator;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class Test {
     public static void main(String[] args) throws Exception {
 
+        Properties properties = new Properties();
+        FileInputStream fileInputStream = new FileInputStream("./src/SearchEngineProperties.txt");
+        properties.load(fileInputStream);
+        int X = Integer.parseInt(properties.getProperty("X"));
+        int Y = Integer.parseInt(properties.getProperty("Y"));
+        String SEED = properties.getProperty("SEED");
+
+//
         WordTable wordTable = new WordTable();
-        Crawler crawler = new Crawler(wordTable, "https://www.comp.hkbu.edu.hk/v1/?file=181", 100,100);
+        Crawler crawler = new Crawler(wordTable, SEED, X,Y);
         crawler.crawling();
 
 

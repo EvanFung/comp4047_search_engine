@@ -59,11 +59,10 @@ public class ConnectionPack
 
             setCode(httpURLConnection.getResponseCode());
 
-            System.out.println("getCode(): " + getCode());
-
             if(getCode() == 302)
             {
                 if(Crawler.isInExceptUrl(Crawler.toRedirectedUrl(getUrl().toString()).toString(), Crawler.URLException)) return false;
+                System.out.println("what is the redirected url " + Crawler.toRedirectedUrl(getUrl().toString()).toString());
             }
 
             //content of the html
